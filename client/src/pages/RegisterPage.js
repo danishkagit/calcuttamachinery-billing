@@ -52,7 +52,7 @@ const RegisterPage = () => {
         <div className="auth-left">
           <div className="auth-left-content">
             <div className="auth-logo">
-              <img src="/logo.svg" alt="Calcutta Machinery" />
+              <img src="/logo.png" alt="Calcutta Machinery" />
             </div>
             <h1 className="text-white fw-bold mt-3" style={{ fontFamily: 'Outfit, sans-serif' }}>Get Started</h1>
             <p className="text-white-50 mt-2">Create your account and start managing your GST billing for Calcutta Machinery effortlessly.</p>

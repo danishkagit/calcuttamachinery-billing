@@ -89,8 +89,8 @@ const Sidebar = ({ isOpen, onClose }) => {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-brand">
-            <div className="sidebar-brand-logo">
-              <img src="/logo.svg" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="sidebar-brand-logo" style={{ background: '#fff', padding: '2px' }}>
+              <img src="/logo.png" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div className="d-flex flex-column lh-1">
               <span className="fw-bold" style={{ fontSize: '0.95rem', fontFamily: "'Outfit', sans-serif" }}>Calcutta Machinery</span>

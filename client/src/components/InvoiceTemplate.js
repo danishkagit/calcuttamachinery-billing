@@ -83,7 +83,7 @@ const InvoiceTemplate = forwardRef(({ invoice, company, party, template = 'class
           <div style={{ background: s.headerBg, color: s.headerText, padding: '30px', borderRadius: '12px 12px 0 0', marginBottom: '24px' }}>
             <div className="row align-items-center">
               <div className="col-8">
-                {company?.logo && <img src={company.logo} alt="Logo" style={{ maxHeight: '60px', marginBottom: '8px' }} />}
+                <img src={company?.logo || '/logo.png'} alt="Logo" style={{ maxHeight: '60px', marginBottom: '8px' }} />
                 <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, marginBottom: '4px' }}>{company?.businessName || 'Business Name'}</h2>
                 <p style={{ opacity: 0.8, marginBottom: '2px', fontSize: '0.85rem' }}>{company?.address}{company?.address ? ', ' : ''}{company?.city || ''}</p>
                 <p style={{ opacity: 0.8, marginBottom: 0, fontSize: '0.85rem' }}>{company?.state}{company?.state ? ' - ' : ''}{company?.pincode || ''}</p>
@@ -228,7 +228,7 @@ const InvoiceTemplate = forwardRef(({ invoice, company, party, template = 'class
           <div style={{ borderBottom: `3px solid ${s.accentColor}`, padding: '24px 24px 16px', marginBottom: '20px' }}>
             <div className="row align-items-center">
               <div className="col-7">
-                {company?.logo && <img src={company.logo} alt="Logo" style={{ maxHeight: '50px', marginBottom: '8px' }} />}
+                <img src={company?.logo || '/logo.png'} alt="Logo" style={{ maxHeight: '50px', marginBottom: '8px' }} />
                 <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: s.headerText, marginBottom: '2px' }}>{company?.businessName || 'Business Name'}</h2>
                 <p style={{ color: '#64748b', marginBottom: '2px', fontSize: '0.85rem' }}>{company?.address}{company?.address ? ', ' : ''}{company?.city || ''}</p>
                 <p style={{ color: '#64748b', marginBottom: 0, fontSize: '0.82rem' }}>GSTIN: {company?.gstin || 'N/A'} | {company?.email || ''}</p>

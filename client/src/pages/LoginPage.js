@@ -43,7 +43,7 @@ const LoginPage = () => {
         <div className="auth-left">
           <div className="auth-left-content">
             <div className="auth-logo">
-              <img src="/logo.svg" alt="Calcutta Machinery" />
+              <img src="/logo.png" alt="Calcutta Machinery" />
             </div>
             <h1 className="text-white fw-bold mt-3" style={{ fontFamily: 'Outfit, sans-serif' }}>Calcutta Machinery</h1>
             <p className="text-white-50 mt-1 mb-0" style={{ fontSize: '0.8rem', letterSpacing: '1px' }}>
