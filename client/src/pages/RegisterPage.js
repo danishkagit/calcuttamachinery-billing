@@ -54,7 +54,7 @@ const RegisterPage = () => {
             <div className="auth-logo">
               <img src="/logo.png" alt="Calcutta Machinery" />
             </div>
-            <h1 className="text-white fw-bold mt-3" style={{ fontFamily: 'Outfit, sans-serif' }}>Get Started</h1>
+            <h1 className="text-white fw-bold mt-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>Get Started</h1>
             <p className="text-white-50 mt-2">Create your account and start managing your GST billing for Calcutta Machinery effortlessly.</p>
             <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
               <p className="mb-0 text-white-50" style={{ fontSize: '0.72rem', lineHeight: '1.5' }}>

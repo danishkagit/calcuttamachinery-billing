@@ -42,13 +42,16 @@ const Dashboard = () => {
       <div className="dashboard-welcome">
         <div className="d-flex justify-content-between align-items-start">
           <div>
-            <h4 className="mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #27272a, #09090b)',
-                marginRight: 10, boxShadow: '0 4px 12px rgba(9,9,11,0.15)',
-                fontSize: 16, fontWeight: 700, border: '1px solid rgba(255,255,255,0.1)'
-              }}>CM</span>
+            <h4 className="mb-1 d-flex align-items-center" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, gap: '12px' }}>
+              <img src="/logo.png" alt="CM" style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: '#ffffff',
+                padding: '2px',
+                objectFit: 'contain',
+                boxShadow: '0 4px 12px rgba(255,255,255,0.15)'
+              }} />
               Calcutta Machinery
             </h4>
             <p className="mb-2">Manufacturer of Aluminium Sliver Cans for Jute & Twine Mills</p>
