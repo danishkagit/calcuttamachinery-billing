@@ -93,8 +93,8 @@ const Sidebar = ({ isOpen, onClose }) => {
               <img src="/logo.png" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div className="d-flex flex-column lh-1">
-              <span className="fw-bold" style={{ fontSize: '0.95rem', fontFamily: "'Outfit', sans-serif" }}>Calcutta Machinery</span>
-              <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.3px' }}>GST BILLING</span>
+              <span className="fw-bold" style={{ fontSize: '0.95rem', fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.3px' }}>Calcutta Machinery</span>
+              <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.8px', fontWeight: 600, textTransform: 'uppercase', marginTop: '2px' }}>GST BILLING</span>
             </div>
           </div>
           <button className="btn btn-link text-white d-lg-none" onClick={onClose}>

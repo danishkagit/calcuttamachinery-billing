@@ -42,12 +42,12 @@ const Dashboard = () => {
       <div className="dashboard-welcome">
         <div className="d-flex justify-content-between align-items-start">
           <div>
-            <h4 className="mb-1">
+            <h4 className="mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
               <span style={{
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #e94560, #c73e54)',
-                marginRight: 10, boxShadow: '0 4px 12px rgba(233,69,96,0.3)',
-                fontSize: 16, fontWeight: 700
+                width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #27272a, #09090b)',
+                marginRight: 10, boxShadow: '0 4px 12px rgba(9,9,11,0.15)',
+                fontSize: 16, fontWeight: 700, border: '1px solid rgba(255,255,255,0.1)'
               }}>CM</span>
               Calcutta Machinery
             </h4>
@@ -55,7 +55,7 @@ const Dashboard = () => {
             <span className="company-gstin">GSTIN: 19ALUPS4733P1ZW</span>
           </div>
           <div className="d-none d-md-flex gap-2" style={{ position: 'relative', zIndex: 1 }}>
-            <Link to="/invoices/create" className="btn text-white" style={{ background: 'linear-gradient(135deg, #e94560, #c73e54)', border: 'none', boxShadow: '0 4px 14px rgba(233,69,96,0.3)' }}>
+            <Link to="/invoices/create" className="btn text-white" style={{ background: 'linear-gradient(135deg, #27272a, #09090b)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 14px rgba(9,9,11,0.15)' }}>
               <i className="fas fa-plus me-1"></i>New Invoice
             </Link>
             <Link to="/parties/add" className="btn text-white" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
@@ -145,11 +145,12 @@ const Dashboard = () => {
                 <div className="text-center py-5">
                   <div style={{
                     width: 56, height: 56, borderRadius: 16,
-                    background: 'linear-gradient(135deg, #fde8ec, #fff)',
+                    background: 'linear-gradient(135deg, #f4f4f5, #fff)',
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    marginBottom: 12, boxShadow: '0 4px 12px rgba(233,69,96,0.1)'
+                    marginBottom: 12, boxShadow: '0 4px 12px rgba(9,9,11,0.05)',
+                    border: '1px solid rgba(0,0,0,0.03)'
                   }}>
-                    <i className="fas fa-credit-card" style={{ color: 'var(--primary)', fontSize: 22 }}></i>
+                    <i className="fas fa-credit-card" style={{ color: 'var(--primary)', fontSize: 20 }}></i>
                   </div>
                   <p className="small text-muted mb-0">No payments received today</p>
                 </div>

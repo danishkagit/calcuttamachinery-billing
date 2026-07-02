@@ -15,14 +15,14 @@ const Navbar = ({ toggleSidebar }) => {
           <div style={{
             width: 38, height: 38, borderRadius: 10,
             overflow: 'hidden', flexShrink: 0,
-            boxShadow: '0 2px 8px rgba(233,69,96,0.2)',
-            border: '2px solid rgba(233,69,96,0.15)'
+            boxShadow: '0 2px 8px rgba(18,18,20,0.1)',
+            border: '1px solid rgba(18,18,20,0.1)'
           }}>
             <img src="/logo.png" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <div className="d-flex flex-column lh-1">
-            <span className="fw-bold" style={{ fontSize: '1rem', fontFamily: 'Outfit, sans-serif', color: '#1a1a2e' }}>Calcutta Machinery</span>
-            <span style={{ fontSize: '0.6rem', letterSpacing: '0.8px', color: '#e94560', fontWeight: 600, textTransform: 'uppercase' }}>GST Billing System</span>
+            <span className="fw-bold" style={{ fontSize: '1rem', fontFamily: 'Space Grotesk, sans-serif', color: '#09090b', letterSpacing: '0.2px' }}>Calcutta Machinery</span>
+            <span style={{ fontSize: '0.6rem', letterSpacing: '1px', color: '#71717a', fontWeight: 700, textTransform: 'uppercase', marginTop: '2px' }}>GST Billing System</span>
           </div>
         </Link>
 
