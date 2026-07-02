@@ -91,7 +91,7 @@ const PartyList = () => {
   };
 
   return (
-    <div className="party-list-page">
+    <div className="party-list-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">Parties / Customers</h4>
         <div className="d-flex gap-2">

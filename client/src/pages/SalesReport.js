@@ -46,7 +46,7 @@ const SalesReport = () => {
   useEffect(() => { fetchReport(); }, [fetchReport]);
 
   return (
-    <div className="sales-report-page">
+    <div className="sales-report-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">Sales Report</h4>
         <button className="btn btn-outline-primary" onClick={fetchReport}><i className="fas fa-sync me-1"></i>Refresh</button>

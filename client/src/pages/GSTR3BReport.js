@@ -52,10 +52,24 @@ const GSTR3BReport = () => {
 
   useEffect(() => { fetchReport(); }, [fetchReport]);
 
+  const handleDownloadJSON = async () => {
+    try {
+      const res = await api.get(`/gst/gstr3b/${year}/${month + 1}`);
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(res.data.data, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = `GSTR3B_${months[month]}_${year}.json`;
+      a.click();
+      toast.success("GST JSON Downloaded Successfully");
+    } catch (err) {
+      toast.error('Failed to download GSTR-3B JSON');
+    }
+  };
+
   if (loading) return <Loading />;
 
   return (
-    <div className="gstr3b-report-page">
+    <div className="gstr3b-report-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">GSTR-3B Summary</h4>
       </div>
@@ -205,7 +219,8 @@ const GSTR3BReport = () => {
         </>
       )}
 
-      <div className="text-end mt-3">
+      <div className="text-end mt-3 d-flex justify-content-end gap-2">
+        <button className="btn btn-primary btn-sm" onClick={handleDownloadJSON}><i className="fas fa-download me-1"></i>Download JSON for Portal</button>
         <button className="btn btn-outline-secondary btn-sm" onClick={() => window.print()}><i className="fas fa-print me-1"></i>Print</button>
       </div>
     </div>

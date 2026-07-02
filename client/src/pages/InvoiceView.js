@@ -79,7 +79,7 @@ const InvoiceView = () => {
   const dueAmount = (invoice.grandTotal || 0) - (invoice.paidAmount || 0);
 
   return (
-    <div className="invoice-view-page">
+    <div className="invoice-view-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-3 no-print">
         <h4 className="fw-bold mb-0">{invoice.invoiceType}: {invoice.invoiceNo}</h4>
         <div className="d-flex gap-2 flex-wrap">

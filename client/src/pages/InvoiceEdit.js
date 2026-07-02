@@ -227,7 +227,7 @@ const InvoiceEdit = () => {
   const isInterState = selectedParty?.stateCode && companyStateCode && selectedParty.stateCode !== companyStateCode;
 
   return (
-    <div className="invoice-create-page">
+    <div className="invoice-create-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">Edit Invoice: {form.invoiceNo || ''}</h4>
         <div>

@@ -142,6 +142,112 @@ router.post('/', [
   }
 });
 
+router.post('/import', async (req, res) => {
+  try {
+    const rawInvoices = req.body;
+    if (!Array.isArray(rawInvoices) || rawInvoices.length === 0) {
+      return res.status(400).json({ success: false, error: 'Invalid data format. Expected an array of invoices.' });
+    }
+
+    const company = await Company.findOne(); // Assuming single company setup
+    if (!company) {
+      return res.status(400).json({ success: false, error: 'Please setup company profile first.' });
+    }
+
+    const imported = [];
+    const errors = [];
+
+    for (let i = 0; i < rawInvoices.length; i++) {
+      const invData = rawInvoices[i];
+      try {
+        let party = null;
+        if (invData.partyGstin) {
+          party = await Party.findOne({ gstin: invData.partyGstin });
+        }
+        if (!party && invData.partyName) {
+          party = await Party.findOne({ name: new RegExp('^' + invData.partyName + '$', 'i') });
+        }
+        if (!party) {
+          errors.push(`Row ${i+1}: Party ${invData.partyName || invData.partyGstin} not found in database.`);
+          continue;
+        }
+
+        const items = [];
+        for (const item of (invData.items || [])) {
+          let product = null;
+          if (item.productName) {
+            product = await Product.findOne({ name: new RegExp('^' + item.productName + '$', 'i') });
+          }
+          items.push({
+            product: product ? product._id : null,
+            description: item.description || (product ? product.name : ''),
+            quantity: Number(item.quantity) || 1,
+            unit: item.unit || (product ? product.unit : 'Nos'),
+            rate: Number(item.rate) || 0,
+            taxRate: Number(item.taxRate) || (product ? product.taxRate : 0),
+            cess: Number(item.cess) || (product ? product.cess : 0)
+          });
+        }
+
+        let invoiceNo = invData.invoiceNo;
+        if (!invoiceNo) {
+          invoiceNo = await generateInvoiceNo(company);
+          company.lastInvoiceNo = (company.lastInvoiceNo || 0) + 1;
+        }
+
+        const taxResult = calculateTax(items, company.stateCode, party.stateCode);
+        const grandTotalRounded = Math.round(taxResult.grandTotal + taxResult.roundOff);
+        const inWords = amountInWords(grandTotalRounded);
+
+        const newInvoice = await Invoice.create({
+          userId: req.user ? req.user.id : null,
+          invoiceNo,
+          invoiceDate: invData.invoiceDate ? new Date(invData.invoiceDate) : new Date(),
+          party: party._id,
+          company: company._id,
+          items: taxResult.items,
+          subtotal: taxResult.subtotal,
+          cgstTotal: taxResult.cgstTotal,
+          sgstTotal: taxResult.sgstTotal,
+          igstTotal: taxResult.igstTotal,
+          cessTotal: taxResult.cessTotal,
+          grandTotal: taxResult.grandTotal,
+          roundOff: taxResult.roundOff,
+          totalBeforeTax: taxResult.totalBeforeTax,
+          totalTax: taxResult.totalTax,
+          amountInWords: inWords,
+          placeOfSupply: invData.placeOfSupply || party.state || '',
+          invoiceType: invData.invoiceType || 'Tax Invoice',
+          paymentStatus: invData.paymentStatus || 'Unpaid',
+          paidAmount: Number(invData.paidAmount) || 0,
+          paymentMethod: invData.paymentMethod || ''
+        });
+        
+        imported.push(newInvoice);
+      } catch (err) {
+        if (err.code === 11000) {
+           errors.push(`Row ${i+1}: Invoice No ${invData.invoiceNo} already exists.`);
+        } else {
+           errors.push(`Row ${i+1}: ${err.message}`);
+        }
+      }
+    }
+
+    if (company.isModified('lastInvoiceNo')) {
+      await company.save();
+    }
+
+    res.status(201).json({ 
+      success: true, 
+      count: imported.length, 
+      data: imported,
+      errors: errors.length > 0 ? errors : undefined
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const filter = {};

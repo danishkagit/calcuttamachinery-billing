@@ -158,7 +158,7 @@ const GSTReturns = () => {
   };
 
   return (
-    <div className="gst-returns-page">
+    <div className="gst-returns-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0"><i className="fas fa-file-invoice me-2"></i>GST Returns</h4>
       </div>

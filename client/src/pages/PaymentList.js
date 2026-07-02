@@ -103,7 +103,7 @@ const PaymentList = () => {
   if (loading && page === 1) return <Loading />;
 
   return (
-    <div className="payment-list-page">
+    <div className="payment-list-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">Payments</h4>
         <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal" onClick={openModal}><i className="fas fa-plus me-1"></i>Record Payment</button>

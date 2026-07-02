@@ -11,13 +11,18 @@ const Navbar = ({ toggleSidebar }) => {
         <button className="btn btn-link sidebar-toggler d-lg-none me-2" onClick={toggleSidebar} type="button">
           <i className="fas fa-bars"></i>
         </button>
-        <Link className="navbar-brand d-flex align-items-center" to="/">
-          <div className="brand-icon me-2">
-            <img src="/logo.svg" alt="CM" />
+        <Link className="navbar-brand d-flex align-items-center" to="/" style={{ gap: 10 }}>
+          <div style={{
+            width: 38, height: 38, borderRadius: 10,
+            overflow: 'hidden', flexShrink: 0,
+            boxShadow: '0 2px 8px rgba(233,69,96,0.2)',
+            border: '2px solid rgba(233,69,96,0.15)'
+          }}>
+            <img src="/logo.svg" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div className="d-flex flex-column lh-1">
-            <span className="fw-bold" style={{ fontSize: '1.05rem', fontFamily: 'Outfit, sans-serif' }}>Calcutta Machinery</span>
-            <span className="text-muted" style={{ fontSize: '0.65rem', letterSpacing: '0.5px' }}>GST BILLING SYSTEM</span>
+            <span className="fw-bold" style={{ fontSize: '1rem', fontFamily: 'Outfit, sans-serif', color: '#1a1a2e' }}>Calcutta Machinery</span>
+            <span style={{ fontSize: '0.6rem', letterSpacing: '0.8px', color: '#e94560', fontWeight: 600, textTransform: 'uppercase' }}>GST Billing System</span>
           </div>
         </Link>
 
@@ -67,10 +72,21 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
 
         <div className="d-flex align-items-center ms-auto">
-          <span className="company-badge d-none d-md-inline-block me-3">
-            <i className="fas fa-industry me-1"></i>Calcutta Machinery
-          </span>
-          <Link to="/company" className="btn btn-outline-primary btn-sm">
+          {company && (
+            <span className="company-badge d-none d-md-inline-block me-3">
+              <i className="fas fa-building me-1"></i>{company.businessName || 'Business'}
+            </span>
+          )}
+          <Link to="/company" className="btn" style={{
+            background: 'linear-gradient(135deg, #f8f9fc, #fff)',
+            border: '1.5px solid rgba(0,0,0,0.06)',
+            borderRadius: 10,
+            color: '#64748b',
+            fontWeight: 600,
+            fontSize: '0.8rem',
+            padding: '6px 14px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+          }}>
             <i className="fas fa-cog me-1"></i>Settings
           </Link>
         </div>

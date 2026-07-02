@@ -81,7 +81,7 @@ const ProductForm = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="product-form-page">
+    <div className="product-form-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">{isEdit ? 'Edit Product' : 'Add New Product'}</h4>
       </div>

@@ -4,6 +4,7 @@ import api from '../utils/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import Loading from '../components/Loading';
 import { toast } from 'react-toastify';
+import Papa from 'papaparse';
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -17,6 +18,7 @@ const InvoiceList = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const fileInputRef = React.useRef(null);
   const limit = 15;
 
   const fetchInvoices = useCallback(async () => {
@@ -53,11 +55,134 @@ const InvoiceList = () => {
     }
   };
 
+  const handleExport = async () => {
+    try {
+      const res = await api.get('/invoices', { params: { limit: 10000, paymentStatus: statusFilter, startDate: fromDate, endDate: toDate, search } });
+      const exportData = [];
+      const invs = res.data.data || [];
+      if (invs.length === 0) return toast.info("No invoices to export");
+      
+      invs.forEach(inv => {
+        if (!inv.items || inv.items.length === 0) {
+           exportData.push({
+             invoiceNo: inv.invoiceNo,
+             invoiceDate: inv.invoiceDate ? inv.invoiceDate.substring(0,10) : '',
+             partyName: inv.party?.name || '',
+             partyGstin: inv.party?.gstin || '',
+             placeOfSupply: inv.placeOfSupply || '',
+             invoiceType: inv.invoiceType || '',
+             paymentStatus: inv.paymentStatus || '',
+             paidAmount: inv.paidAmount || 0,
+             paymentMethod: inv.paymentMethod || '',
+             productName: '',
+             description: '',
+             quantity: '',
+             unit: '',
+             rate: '',
+             taxRate: '',
+             cess: ''
+           });
+        } else {
+           inv.items.forEach(item => {
+             exportData.push({
+               invoiceNo: inv.invoiceNo,
+               invoiceDate: inv.invoiceDate ? inv.invoiceDate.substring(0,10) : '',
+               partyName: inv.party?.name || '',
+               partyGstin: inv.party?.gstin || '',
+               placeOfSupply: inv.placeOfSupply || '',
+               invoiceType: inv.invoiceType || '',
+               paymentStatus: inv.paymentStatus || '',
+               paidAmount: inv.paidAmount || 0,
+               paymentMethod: inv.paymentMethod || '',
+               productName: item.product?.name || item.description || '',
+               description: item.description || '',
+               quantity: item.quantity,
+               unit: item.unit,
+               rate: item.rate,
+               taxRate: item.taxRate,
+               cess: item.cess
+             });
+           });
+        }
+      });
+
+      const csv = Papa.unparse(exportData);
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sales_invoices.csv';
+      a.click();
+    } catch (err) {
+      toast.error('Failed to export invoices');
+    }
+  };
+
+  const handleImportClick = () => fileInputRef.current.click();
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          const grouped = {};
+          results.data.forEach(row => {
+            if (!row.invoiceNo) return;
+            if (!grouped[row.invoiceNo]) {
+              grouped[row.invoiceNo] = {
+                invoiceNo: row.invoiceNo,
+                invoiceDate: row.invoiceDate,
+                partyName: row.partyName,
+                partyGstin: row.partyGstin,
+                placeOfSupply: row.placeOfSupply,
+                invoiceType: row.invoiceType,
+                paymentStatus: row.paymentStatus,
+                paidAmount: row.paidAmount,
+                paymentMethod: row.paymentMethod,
+                items: []
+              };
+            }
+            if (row.productName || row.description) {
+              grouped[row.invoiceNo].items.push({
+                productName: row.productName,
+                description: row.description,
+                quantity: row.quantity,
+                unit: row.unit,
+                rate: row.rate,
+                taxRate: row.taxRate,
+                cess: row.cess
+              });
+            }
+          });
+
+          const res = await api.post('/invoices/import', Object.values(grouped));
+          toast.success(`Imported ${res.data.count} invoices successfully`);
+          if (res.data.errors) {
+            console.warn("Import errors:", res.data.errors);
+            toast.warning(`Imported with some errors. Check console.`);
+          }
+          fetchInvoices();
+        } catch (err) {
+          toast.error(err.response?.data?.error || 'Import failed');
+        }
+      }
+    });
+    e.target.value = null;
+  };
+
   return (
-    <div className="invoice-list-page">
+    <div className="invoice-list-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">Invoices</h4>
-        <Link to="/invoices/create" className="btn btn-primary"><i className="fas fa-plus me-1"></i>Create Invoice</Link>
+        <div className="d-flex gap-2">
+          <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept=".csv" onChange={handleFileUpload} />
+          <button className="btn btn-outline-success" onClick={handleExport}><i className="fas fa-file-export me-1"></i>Export</button>
+          <button className="btn btn-outline-primary" onClick={handleImportClick}><i className="fas fa-file-import me-1"></i>Import</button>
+          <Link to="/invoices/create" className="btn btn-primary"><i className="fas fa-plus me-1"></i>Create Invoice</Link>
+        </div>
       </div>
 
       <div className="card border-0 shadow-sm mb-4">

@@ -90,9 +90,12 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="sidebar-header">
           <div className="sidebar-brand">
             <div className="sidebar-brand-logo">
-              <i className="fas fa-file-invoice" style={{ color: '#e94560' }}></i>
+              <img src="/logo.svg" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
-            <span className="fw-bold">Calcutta Machinery</span>
+            <div className="d-flex flex-column lh-1">
+              <span className="fw-bold" style={{ fontSize: '0.95rem', fontFamily: "'Outfit', sans-serif" }}>Calcutta Machinery</span>
+              <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.3px' }}>GST BILLING</span>
+            </div>
           </div>
           <button className="btn btn-link text-white d-lg-none" onClick={onClose}>
             <i className="fas fa-times"></i>

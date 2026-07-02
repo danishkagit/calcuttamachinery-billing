@@ -76,7 +76,7 @@ const OutstandingReport = () => {
   const totalOutstanding = filtered.reduce((s, p) => s + p.outstanding, 0);
 
   return (
-    <div className="outstanding-report-page">
+    <div className="outstanding-report-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">Outstanding Report</h4>
       </div>
