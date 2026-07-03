@@ -19,9 +19,18 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please provide a password'],
     minlength: 6,
     select: false
+  },
+  googleId: {
+    type: String,
+    sparse: true,
+    unique: true
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   },
   phone: {
     type: String,

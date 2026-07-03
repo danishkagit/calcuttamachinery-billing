@@ -3,6 +3,13 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
+const { OAuth2Client } = require('google-auth-library');
+
+// We use a fallback client ID here. In production, this should come from process.env.GOOGLE_CLIENT_ID
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE');
+
+// Define admin emails
+const ADMIN_EMAILS = ['dnsh00786@gmail.com', 'shakib_champdani@yahoo.co.in'];
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -70,11 +77,76 @@ router.post('/login', [
         name: user.name,
         email: user.email,
         phone: user.phone,
+        role: user.role,
         token
       }
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/google', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    
+    if (!credential) {
+      return res.status(400).json({ success: false, error: 'Google credential missing' });
+    }
+
+    // Verify Google Token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE',
+    });
+    
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    // Check if user exists by googleId or email
+    let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+    // Determine Role
+    const role = ADMIN_EMAILS.includes(email.toLowerCase()) ? 'admin' : 'user';
+
+    if (user) {
+      // If user exists but doesn't have googleId linked yet, link it
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.role = role; // Upgrade role if necessary
+        await user.save();
+      }
+      // If role was updated in the list but not in DB
+      if (user.role !== role) {
+        user.role = role;
+        await user.save();
+      }
+    } else {
+      // Create new user if not exists
+      user = await User.create({
+        name,
+        email,
+        googleId,
+        role
+      });
+    }
+
+    const token = user.generateToken();
+
+    res.json({
+      success: true,
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+        role: user.role,
+        token
+      }
+    });
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    res.status(500).json({ success: false, error: 'Google authentication failed' });
   }
 });
 

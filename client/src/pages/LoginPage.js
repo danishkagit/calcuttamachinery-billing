@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { GoogleLogin } from '@react-oauth/google';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,7 @@ const LoginPage = () => {
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login, user } = useAuth();
+  const { login, googleLogin, user } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -30,6 +31,21 @@ const LoginPage = () => {
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.error || 'Login failed. Please check your credentials.';
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    try {
+      await googleLogin(credentialResponse.credential);
+      toast.success('Google Login successful!');
+      navigate('/');
+    } catch (err) {
+      const msg = err.response?.data?.error || 'Google Login failed.';
       setError(msg);
       toast.error(msg);
     } finally {
@@ -136,6 +152,24 @@ const LoginPage = () => {
                 {loading ? <><span className="spinner-border spinner-border-sm me-2"></span>Signing in...</> : 'Sign In'}
               </button>
             </form>
+
+            <div className="text-center my-3 text-muted position-relative">
+              <hr style={{ borderColor: 'var(--glass-border)' }} />
+              <span style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--navy)', padding: '0 10px', fontSize: '0.8rem' }}>OR</span>
+            </div>
+
+            <div className="d-flex justify-content-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => {
+                  toast.error('Google Login Failed');
+                }}
+                theme="filled_black"
+                shape="rectangular"
+                width="100%"
+              />
+            </div>
+
             <p className="text-center mt-4 mb-0 small" style={{ color: 'var(--text-muted)' }}>
               Don't have an account? <Link to="/register" className="fw-semibold" style={{ color: 'var(--primary)' }}>Create Account</Link>
             </p>

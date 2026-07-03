@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
 import { CompanyProvider } from './context/CompanyContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -33,11 +34,13 @@ const ProtectedLayout = ({ children }) => (
 );
 
 function App() {
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE';
   return (
-    <AuthProvider>
-      <CompanyProvider>
-        <ToastContainer
-          position="top-right"
+    <GoogleOAuthProvider clientId={clientId}>
+      <AuthProvider>
+        <CompanyProvider>
+          <ToastContainer
+            position="top-right"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop
@@ -70,8 +73,9 @@ function App() {
           <Route path="/payments" element={<ProtectedLayout><PaymentList /></ProtectedLayout>} />
           <Route path="/gst-returns" element={<ProtectedLayout><GSTReturns /></ProtectedLayout>} />
         </Routes>
-      </CompanyProvider>
-    </AuthProvider>
+        </CompanyProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 
