@@ -38,6 +38,15 @@ const styles = {
     borderColor: '#d1d5db',
     fontFamily: "'Inter', 'Segoe UI', sans-serif",
     lightBg: '#f8fafc',
+  },
+  tally: {
+    fontFamily: "Arial, sans-serif",
+    borderColor: "#000",
+    headerBg: "#fff",
+    headerText: "#000",
+    tableHeaderBg: "#fff",
+    tableHeaderText: "#000",
+    accentColor: "#000",
   }
 };
 
@@ -339,96 +348,6 @@ const InvoiceTemplate = forwardRef(({ invoice, company, party, template = 'class
             </div>
           </div>
 
-          <div style={{ padding: '0 24px', marginTop: '20px', borderTop: `1px solid ${s.borderColor}`, paddingTop: '16px' }}>
-            <div className="row">
-              <div className="col-6">
-                {company?.bankName && (
-                  <div style={{ fontSize: '0.82rem' }}>
-                    <p style={{ fontWeight: 600, marginBottom: '4px' }}>Bank Details:</p>
-                    <p style={{ marginBottom: '2px', color: '#64748b' }}>{company.bankName} | A/C: {company.accountNo}</p>
-                    <p style={{ marginBottom: 0, color: '#64748b' }}>IFSC: {company.ifscCode}</p>
-                  </div>
-                )}
-              </div>
-              <div className="col-6 text-end">
-                {company?.signature && <img src={company.signature} alt="Signature" style={{ maxHeight: '40px', marginBottom: '2px' }} />}
-                <p style={{ fontWeight: 600, marginBottom: 0 }}>Authorised Signatory</p>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Template: Minimal */}
-      {template === 'minimal' && (
-        <>
-          <div style={{ padding: '20px', borderBottom: `2px solid ${s.accentColor}`, marginBottom: '20px' }}>
-            <div className="row">
-              <div className="col-8">
-                <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: s.headerText, marginBottom: '4px' }}>{company?.businessName || 'Business'}</h2>
-                <p style={{ color: '#64748b', marginBottom: '2px', fontSize: '0.85rem' }}>{company?.address || ''}{company?.city ? `, ${company.city}` : ''}</p>
-                <p style={{ color: '#64748b', marginBottom: 0, fontSize: '0.82rem' }}>GSTIN: {company?.gstin || 'N/A'}</p>
-              </div>
-              <div className="col-4 text-end">
-                <div style={{ fontWeight: 700, fontSize: '1.3rem', color: s.accentColor }}>{getDocumentTitle(invoice.invoiceType)}</div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>#{invoice.invoiceNo}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="row mb-4" style={{ padding: '0 20px' }}>
-            <div className="col-6">
-              <p style={{ marginBottom: '2px', fontSize: '0.85rem' }}><span style={{ color: '#64748b' }}>Date:</span> {formatDate(invoice.invoiceDate)}</p>
-              <p style={{ marginBottom: 0, fontSize: '0.85rem' }}><span style={{ color: '#64748b' }}>Due:</span> {formatDate(invoice.dueDate)}</p>
-            </div>
-            <div className="col-6 text-end">
-              <p style={{ marginBottom: '2px', fontWeight: 600 }}>{party?.name || ''}</p>
-              <p style={{ marginBottom: 0, fontSize: '0.85rem', color: '#64748b' }}>{party?.gstin || 'No GSTIN'}</p>
-            </div>
-          </div>
-
-          <div style={{ padding: '0 20px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-              <thead>
-                <tr style={{ borderBottom: `2px solid ${s.accentColor}` }}>
-                  <th style={{ padding: '8px 10px', textAlign: 'left', color: s.accentColor, fontWeight: 600 }}>Item</th>
-                  <th style={{ padding: '8px 10px', textAlign: 'center', color: s.accentColor, fontWeight: 600 }}>Qty</th>
-                  <th style={{ padding: '8px 10px', textAlign: 'right', color: s.accentColor, fontWeight: 600 }}>Rate</th>
-                  <th style={{ padding: '8px 10px', textAlign: 'right', color: s.accentColor, fontWeight: 600 }}>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(invoice.items || []).map((item, i) => (
-                  <tr key={i} style={{ borderBottom: `1px solid ${s.borderColor}` }}>
-                    <td style={{ padding: '8px 10px' }}>
-                      {item.description || item.product?.name || ''}
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>HSN: {item.product?.hsnCode || item.hsnCode || ''}</div>
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'center' }}>{item.quantity} {item.unit || ''}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right' }}>{formatCurrency(item.rate)}</td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600 }}>{formatCurrency(item.total)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="row mt-3" style={{ padding: '0 20px' }}>
-            <div className="col-6">
-              <p style={{ fontSize: '0.85rem', fontWeight: 500 }}>{invoice.amountInWords || amountInWords(invoice.grandTotal || 0)}</p>
-            </div>
-            <div className="col-6 text-end">
-              <table style={{ width: '100%', fontSize: '0.85rem' }}>
-                <tr><td style={{ padding: '3px 0', color: '#64748b' }}>Subtotal</td><td style={{ padding: '3px 0', textAlign: 'right' }}>{formatCurrency(invoice.subtotal || 0)}</td></tr>
-                <tr><td style={{ padding: '3px 0', color: '#64748b' }}>Tax</td><td style={{ padding: '3px 0', textAlign: 'right' }}>{formatCurrency((invoice.cgstTotal || 0) + (invoice.sgstTotal || 0) + (invoice.igstTotal || 0))}</td></tr>
-                <tr style={{ borderTop: `2px solid ${s.accentColor}` }}>
-                  <td style={{ padding: '6px 0', fontWeight: 700, fontSize: '1rem' }}>Total</td>
-                  <td style={{ padding: '6px 0', textAlign: 'right', fontWeight: 700, fontSize: '1rem', color: s.accentColor }}>{formatCurrency(invoice.grandTotal || 0)}</td>
-                </tr>
-              </table>
-            </div>
-          </div>
-
           <div style={{ padding: '0 20px', marginTop: '24px', borderTop: `1px solid ${s.borderColor}`, paddingTop: '12px' }}>
             <div className="row">
               <div className="col-6">
@@ -441,6 +360,321 @@ const InvoiceTemplate = forwardRef(({ invoice, company, party, template = 'class
             </div>
           </div>
         </>
+      )}
+
+      {/* Template: Tally */}
+      {template === 'tally' && (
+        <div style={{ padding: '0px', color: '#000', fontSize: '12px', lineHeight: '1.4' }}>
+          <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>
+            {getDocumentTitle(invoice.invoiceType)}
+          </div>
+          <div style={{ border: `1px solid ${s.borderColor}`, display: 'flex', flexDirection: 'column' }}>
+            
+            {/* Top Section */}
+            <div style={{ display: 'flex', borderBottom: `1px solid ${s.borderColor}` }}>
+              {/* Left Column (Company & Buyer) */}
+              <div style={{ width: '50%', borderRight: `1px solid ${s.borderColor}`, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: '8px', borderBottom: `1px solid ${s.borderColor}`, flexGrow: 1 }}>
+                  <p style={{ margin: 0, fontWeight: 'bold', fontSize: '13px' }}>{company?.businessName || ''}</p>
+                  <p style={{ margin: 0 }}>{company?.address || ''}</p>
+                  <p style={{ margin: 0 }}>{company?.city ? `${company.city}, ` : ''}{company?.state || ''} {company?.pincode || ''}</p>
+                  <p style={{ margin: 0 }}>GSTIN/UIN: <strong>{company?.gstin || ''}</strong></p>
+                  <p style={{ margin: 0 }}>State Name: {company?.state || ''}</p>
+                  <p style={{ margin: 0 }}>E-Mail: {company?.email || ''}</p>
+                </div>
+                <div style={{ padding: '8px', flexGrow: 1 }}>
+                  <p style={{ margin: 0 }}>Buyer (Bill to)</p>
+                  <p style={{ margin: 0, fontWeight: 'bold', fontSize: '13px' }}>{party?.name || ''}</p>
+                  <p style={{ margin: 0 }}>{party?.address || ''}</p>
+                  <p style={{ margin: 0 }}>{party?.city ? `${party.city}, ` : ''}{party?.state || ''} {party?.pincode || ''}</p>
+                  <p style={{ margin: 0 }}>GSTIN/UIN: <strong>{party?.gstin || ''}</strong></p>
+                  <p style={{ margin: 0 }}>State Name: {party?.state || ''}</p>
+                </div>
+              </div>
+              
+              {/* Right Column (Invoice details) */}
+              <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', borderBottom: `1px solid ${s.borderColor}` }}>
+                  <div style={{ width: '50%', padding: '8px', borderRight: `1px solid ${s.borderColor}` }}>
+                    <p style={{ margin: 0 }}>Invoice No.</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.invoiceNo}</p>
+                  </div>
+                  <div style={{ width: '50%', padding: '8px' }}>
+                    <p style={{ margin: 0 }}>Dated</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{formatDate(invoice.invoiceDate)}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', borderBottom: `1px solid ${s.borderColor}` }}>
+                  <div style={{ width: '50%', padding: '8px', borderRight: `1px solid ${s.borderColor}` }}>
+                    <p style={{ margin: 0 }}>Delivery Note</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.deliveryNote || ''}</p>
+                  </div>
+                  <div style={{ width: '50%', padding: '8px' }}>
+                    <p style={{ margin: 0 }}>Mode/Terms of Payment</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.termsOfPayment || ''}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', borderBottom: `1px solid ${s.borderColor}` }}>
+                  <div style={{ width: '50%', padding: '8px', borderRight: `1px solid ${s.borderColor}` }}>
+                    <p style={{ margin: 0 }}>Supplier's Ref.</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.supplierRef || ''}</p>
+                  </div>
+                  <div style={{ width: '50%', padding: '8px' }}>
+                    <p style={{ margin: 0 }}>Other Reference(s)</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.otherRef || ''}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', borderBottom: `1px solid ${s.borderColor}` }}>
+                  <div style={{ width: '50%', padding: '8px', borderRight: `1px solid ${s.borderColor}` }}>
+                    <p style={{ margin: 0 }}>Buyer's Order No.</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.buyersOrderNo || ''}</p>
+                  </div>
+                  <div style={{ width: '50%', padding: '8px' }}>
+                    <p style={{ margin: 0 }}>Dated</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.orderDate ? formatDate(invoice.orderDate) : ''}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', borderBottom: `1px solid ${s.borderColor}` }}>
+                  <div style={{ width: '50%', padding: '8px', borderRight: `1px solid ${s.borderColor}` }}>
+                    <p style={{ margin: 0 }}>Dispatch Document No.</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.dispatchDocNo || ''}</p>
+                  </div>
+                  <div style={{ width: '50%', padding: '8px' }}>
+                    <p style={{ margin: 0 }}>Delivery Note Date</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.deliveryNoteDate ? formatDate(invoice.deliveryNoteDate) : ''}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', borderBottom: `1px solid ${s.borderColor}` }}>
+                  <div style={{ width: '50%', padding: '8px', borderRight: `1px solid ${s.borderColor}` }}>
+                    <p style={{ margin: 0 }}>Dispatched through</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.transportMode || ''}</p>
+                  </div>
+                  <div style={{ width: '50%', padding: '8px' }}>
+                    <p style={{ margin: 0 }}>Destination</p>
+                    <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.destination || ''}</p>
+                  </div>
+                </div>
+                <div style={{ padding: '8px', flexGrow: 1 }}>
+                  <p style={{ margin: 0 }}>Terms of Delivery</p>
+                  <p style={{ margin: 0, fontWeight: 'bold' }}>{invoice.termsOfDelivery || ''}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Items Table */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', borderBottom: `1px solid ${s.borderColor}` }}>
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${s.borderColor}` }}>
+                  <th style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', width: '4%' }}>Sl<br/>No.</th>
+                  <th style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', width: '40%' }}>Description of Goods</th>
+                  <th style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', width: '10%' }}>HSN/SAC</th>
+                  <th style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', width: '12%' }}>Quantity</th>
+                  <th style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', width: '10%' }}>Rate</th>
+                  <th style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', width: '8%' }}>per</th>
+                  <th style={{ padding: '4px', textAlign: 'center', width: '16%' }}>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(invoice.items || []).map((item, i) => (
+                  <tr key={i}>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'center', verticalAlign: 'top' }}>{i + 1}</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', verticalAlign: 'top' }}>
+                      <strong>{item.description || item.product?.name || ''}</strong>
+                    </td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'center', verticalAlign: 'top' }}>{item.product?.hsnCode || item.hsnCode || ''}</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right', verticalAlign: 'top' }}>
+                      <strong>{item.quantity}</strong> {item.unit || ''}
+                    </td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right', verticalAlign: 'top' }}>{Number(item.rate).toFixed(2)}</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'center', verticalAlign: 'top' }}>{item.unit || ''}</td>
+                    <td style={{ padding: '4px 6px', textAlign: 'right', verticalAlign: 'top' }}>
+                      <strong>{Number(item.taxableValue).toFixed(2)}</strong>
+                    </td>
+                  </tr>
+                ))}
+                
+                {/* Empty filler rows to stretch if items are few - simulated */}
+                <tr>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '60px 4px' }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                  <td></td>
+                </tr>
+
+                {/* CGST / SGST rows */}
+                {invoice.cgstTotal > 0 && (
+                  <tr>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '2px 6px', textAlign: 'right' }}>Output CGST</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ padding: '2px 6px', textAlign: 'right' }}>{Number(invoice.cgstTotal).toFixed(2)}</td>
+                  </tr>
+                )}
+                {invoice.sgstTotal > 0 && (
+                  <tr>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '2px 6px', textAlign: 'right' }}>Output SGST</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ padding: '2px 6px', textAlign: 'right' }}>{Number(invoice.sgstTotal).toFixed(2)}</td>
+                  </tr>
+                )}
+                {invoice.igstTotal > 0 && (
+                  <tr>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '2px 6px', textAlign: 'right' }}>Output IGST</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ padding: '2px 6px', textAlign: 'right' }}>{Number(invoice.igstTotal).toFixed(2)}</td>
+                  </tr>
+                )}
+                {invoice.roundOff !== 0 && (
+                  <tr>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '2px 6px', textAlign: 'right' }}>Round Off</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}` }}></td>
+                    <td style={{ padding: '2px 6px', textAlign: 'right' }}>{Number(invoice.roundOff).toFixed(2)}</td>
+                  </tr>
+                )}
+
+                <tr style={{ borderTop: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}` }}>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '6px' }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '6px', textAlign: 'right', fontWeight: 'bold' }}>Total</td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '6px' }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '6px' }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '6px' }}></td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '6px' }}></td>
+                  <td style={{ padding: '6px', textAlign: 'right', fontWeight: 'bold' }}>₹ {Number(invoice.grandTotal).toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Amount in words */}
+            <div style={{ padding: '8px', borderBottom: `1px solid ${s.borderColor}` }}>
+              <p style={{ margin: 0 }}>Amount Chargeable (in words)</p>
+              <p style={{ margin: 0, fontWeight: 'bold' }}>INR {invoice.amountInWords || amountInWords(invoice.grandTotal || 0)}</p>
+            </div>
+
+            {/* Tax details table */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', borderBottom: `1px solid ${s.borderColor}` }}>
+              <thead>
+                <tr>
+                  <th rowSpan="2" style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', verticalAlign: 'middle' }}>HSN/SAC</th>
+                  <th rowSpan="2" style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', verticalAlign: 'middle' }}>Taxable<br/>Value</th>
+                  {invoice.igstTotal > 0 ? (
+                    <th colSpan="2" style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Integrated Tax</th>
+                  ) : (
+                    <>
+                      <th colSpan="2" style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Central Tax</th>
+                      <th colSpan="2" style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>State Tax</th>
+                    </>
+                  )}
+                  <th rowSpan="2" style={{ borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center', verticalAlign: 'middle' }}>Total<br/>Tax Amount</th>
+                </tr>
+                <tr>
+                  {invoice.igstTotal > 0 ? (
+                    <>
+                      <th style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Rate</th>
+                      <th style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Amount</th>
+                    </>
+                  ) : (
+                    <>
+                      <th style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Rate</th>
+                      <th style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Amount</th>
+                      <th style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Rate</th>
+                      <th style={{ borderRight: `1px solid ${s.borderColor}`, borderBottom: `1px solid ${s.borderColor}`, padding: '4px', textAlign: 'center' }}>Amount</th>
+                    </>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {(invoice.items || []).map((item, i) => (
+                  <tr key={i}>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'center' }}>{item.product?.hsnCode || item.hsnCode || ''}</td>
+                    <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(item.taxableValue).toFixed(2)}</td>
+                    {invoice.igstTotal > 0 ? (
+                      <>
+                        <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{item.igstRate || (item.taxRate || 18)}%</td>
+                        <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(item.igst || 0).toFixed(2)}</td>
+                      </>
+                    ) : (
+                      <>
+                        <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{(item.cgstRate || (item.taxRate ? item.taxRate/2 : 9))}%</td>
+                        <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(item.cgst || 0).toFixed(2)}</td>
+                        <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{(item.sgstRate || (item.taxRate ? item.taxRate/2 : 9))}%</td>
+                        <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(item.sgst || 0).toFixed(2)}</td>
+                      </>
+                    )}
+                    <td style={{ padding: '4px 6px', textAlign: 'right' }}>{Number((item.igst || 0) + (item.cgst || 0) + (item.sgst || 0)).toFixed(2)}</td>
+                  </tr>
+                ))}
+                <tr style={{ borderTop: `1px solid ${s.borderColor}`, fontWeight: 'bold' }}>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>Total</td>
+                  <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(invoice.subtotal).toFixed(2)}</td>
+                  {invoice.igstTotal > 0 ? (
+                    <>
+                      <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px' }}></td>
+                      <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(invoice.igstTotal).toFixed(2)}</td>
+                    </>
+                  ) : (
+                    <>
+                      <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px' }}></td>
+                      <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(invoice.cgstTotal).toFixed(2)}</td>
+                      <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px' }}></td>
+                      <td style={{ borderRight: `1px solid ${s.borderColor}`, padding: '4px 6px', textAlign: 'right' }}>{Number(invoice.sgstTotal).toFixed(2)}</td>
+                    </>
+                  )}
+                  <td style={{ padding: '4px 6px', textAlign: 'right' }}>{Number((invoice.igstTotal || 0) + (invoice.cgstTotal || 0) + (invoice.sgstTotal || 0)).toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Bottom section: Company PAN, Declaration, Signature */}
+            <div style={{ display: 'flex' }}>
+              <div style={{ width: '50%', borderRight: `1px solid ${s.borderColor}`, padding: '8px' }}>
+                {company?.pan && (
+                  <p style={{ margin: '0 0 10px 0' }}>Company's PAN : <strong>{company.pan}</strong></p>
+                )}
+                {company?.bankName && (
+                  <div style={{ marginBottom: '10px' }}>
+                    <p style={{ margin: 0, textDecoration: 'underline' }}>Company's Bank Details</p>
+                    <p style={{ margin: 0 }}>Bank Name : <strong>{company.bankName}</strong></p>
+                    <p style={{ margin: 0 }}>A/c No. : <strong>{company.accountNo}</strong></p>
+                    <p style={{ margin: 0 }}>Branch & IFS Code : <strong>{company.ifscCode}</strong></p>
+                  </div>
+                )}
+                <p style={{ margin: 0, textDecoration: 'underline' }}>Declaration</p>
+                <p style={{ margin: 0, fontSize: '11px' }}>
+                  {invoice.termsAndConditions || 'We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.'}
+                </p>
+              </div>
+              <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: '8px', textAlign: 'right', flexGrow: 1 }}>
+                  <p style={{ margin: 0, fontWeight: 'bold' }}>for {company?.businessName || ''}</p>
+                  <div style={{ height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                    {company?.signature && <img src={company.signature} alt="Signature" style={{ maxHeight: '50px' }} />}
+                  </div>
+                  <p style={{ margin: 0 }}>Authorised Signatory</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <p style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px' }}>This is a Computer Generated Invoice</p>
+        </div>
       )}
     </div>
   );

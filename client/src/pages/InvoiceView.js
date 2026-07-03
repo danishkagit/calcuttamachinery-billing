@@ -87,6 +87,7 @@ const InvoiceView = () => {
             <button className={`btn btn-sm ${template === 'classic' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('classic')}>Classic</button>
             <button className={`btn btn-sm ${template === 'modern' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('modern')}>Modern</button>
             <button className={`btn btn-sm ${template === 'minimal' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('minimal')}>Minimal</button>
+            <button className={`btn btn-sm ${template === 'tally' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('tally')}>Tally ERP</button>
           </div>
           <button className="btn btn-primary" onClick={handlePrint}><i className="fas fa-print me-1"></i>Print</button>
           <button className="btn btn-success" onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent('Invoice ' + invoice.invoiceNo + ' from ' + (company?.businessName || ''))}`, '_blank')}><i className="fab fa-whatsapp me-1"></i>WhatsApp</button>

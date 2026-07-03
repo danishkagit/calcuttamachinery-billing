@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "$RAILWAY_API_URL/api/$1" }
-  ],
-  "buildCommand": "npm run build",
-  "outputDirectory": "build",
-  "framework": "create-react-app"
-}
