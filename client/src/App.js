@@ -26,6 +26,7 @@ import GSTR3BReport from './pages/GSTR3BReport';
 import OutstandingReport from './pages/OutstandingReport';
 import PaymentList from './pages/PaymentList';
 import GSTReturns from './pages/GSTReturns';
+import TemplateSettings from './pages/TemplateSettings';
 
 const ProtectedLayout = ({ children }) => (
   <ProtectedRoute>
@@ -72,6 +73,7 @@ function App() {
           <Route path="/reports/outstanding" element={<ProtectedLayout><OutstandingReport /></ProtectedLayout>} />
           <Route path="/payments" element={<ProtectedLayout><PaymentList /></ProtectedLayout>} />
           <Route path="/gst-returns" element={<ProtectedLayout><GSTReturns /></ProtectedLayout>} />
+          <Route path="/settings/templates" element={<ProtectedLayout><TemplateSettings /></ProtectedLayout>} />
         </Routes>
         </CompanyProvider>
       </AuthProvider>

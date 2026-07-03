@@ -56,7 +56,12 @@ const Sidebar = ({ isOpen, onClose }) => {
       ]
     },
     { path: '/payments', icon: 'fas fa-credit-card', label: 'Payments' },
-    { path: '/company', icon: 'fas fa-building', label: 'Company' },
+    {
+      icon: 'fas fa-cog', label: 'Settings', children: [
+        { path: '/company', icon: 'fas fa-building', label: 'Company Profile' },
+        { path: '/settings/templates', icon: 'fas fa-file-signature', label: 'Invoice Templates' },
+      ]
+    },
   ];
 
   const renderMenuItem = (item, index) => {
