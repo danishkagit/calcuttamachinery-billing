@@ -20,7 +20,7 @@ const InvoiceCreate = () => {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [sidebarHidden, setSidebarHidden] = useState(true);
   const [partySearch, setPartySearch] = useState('');
   const [parties, setParties] = useState([]);
   const [selectedParty, setSelectedParty] = useState(null);
@@ -56,7 +56,18 @@ const InvoiceCreate = () => {
     loadParties();
     loadProducts();
     setLoading(false);
+
+    // Auto-collapse sidebar on mount to give more space for data entry
+    document.body.classList.add('sidebar-collapsed');
+    return () => {
+      document.body.classList.remove('sidebar-collapsed');
+    };
   }, [company]);
+
+  const toggleSidebar = () => {
+    document.body.classList.toggle('sidebar-collapsed');
+    setSidebarHidden(document.body.classList.contains('sidebar-collapsed'));
+  };
 
   const loadParties = async (search = '') => {
     try {
@@ -269,13 +280,13 @@ const InvoiceCreate = () => {
   const pageTitle = isCreditNote ? 'Create Credit Note' : isPurchase ? 'Create Purchase Entry' : 'Create New Invoice';
 
   return (
-    <div className={`invoice-create-page page-enter ${isZoomed ? 'invoice-fullscreen' : ''}`}>
+    <div className="invoice-create-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h4 className="fw-bold mb-0">{pageTitle}</h4>
         <div>
-          <button className="btn btn-outline-info me-2" onClick={() => setIsZoomed(!isZoomed)}>
-            <i className={`fas ${isZoomed ? 'fa-compress' : 'fa-expand'} me-1`}></i>
-            {isZoomed ? 'Exit Zoom' : 'Zoom'}
+          <button className="btn btn-outline-info me-2" onClick={toggleSidebar}>
+            <i className={`fas ${sidebarHidden ? 'fa-arrow-right' : 'fa-arrow-left'} me-1`}></i>
+            {sidebarHidden ? 'Show Panel' : 'Hide Panel'}
           </button>
           <button className="btn btn-primary me-2" onClick={() => handleSubmit(true)} disabled={saving}>
             <i className="fas fa-save me-1"></i>{saving ? 'Saving...' : 'Save & Print'}

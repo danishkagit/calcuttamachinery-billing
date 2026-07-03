@@ -798,24 +798,14 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
   border: 1px solid var(--glass-border) !important;
 }
 
-/* Invoice Fullscreen Mode */
-.invoice-fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: var(--z-index-fullscreen);
-  background: var(--bg-deep);
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(92, 58, 40, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(212, 168, 67, 0.06) 0%, transparent 40%);
-  overflow-y: auto;
-  padding: 30px;
-}
-
-.invoice-fullscreen .card {
-  background: rgba(18, 10, 6, 0.95);
+/* Sidebar Collapsed State for Desktop */
+@media (min-width: 992px) {
+  body.sidebar-collapsed .sidebar {
+    transform: translateX(-100%);
+  }
+  body.sidebar-collapsed .main-content {
+    margin-left: 0;
+  }
 }
 
 .stat-card {
