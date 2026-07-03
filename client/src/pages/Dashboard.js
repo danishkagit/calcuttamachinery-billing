@@ -89,11 +89,11 @@ const Dashboard = () => {
                 width: 44,
                 height: 44,
                 borderRadius: '12px',
-                background: 'rgba(212, 175, 55, 0.1)',
+                background: 'rgba(255, 255, 255, 0.95)',
                 padding: '4px',
                 objectFit: 'contain',
-                boxShadow: '0 0 20px rgba(212, 175, 55, 0.2)',
-                border: '1px solid rgba(212, 175, 55, 0.3)'
+                boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
+                border: '2px solid rgba(212, 175, 55, 0.6)'
               }} />
               <span style={{ textShadow: '0 2px 10px rgba(212, 175, 55, 0.3)' }}>Calcutta Machinery</span>
             </h4>

@@ -90,10 +90,10 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="sidebar-header">
           <div className="sidebar-brand">
             <div className="sidebar-brand-logo" style={{ 
-              background: 'rgba(212, 175, 55, 0.1)', 
+              background: 'rgba(255, 255, 255, 0.95)', 
               padding: '4px',
-              border: '1px solid rgba(212, 175, 55, 0.3)',
-              boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)'
+              border: '2px solid rgba(212, 175, 55, 0.6)',
+              boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)'
             }}>
               <img src="/logo.png" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>

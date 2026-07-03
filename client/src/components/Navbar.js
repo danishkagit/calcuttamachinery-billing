@@ -15,9 +15,9 @@ const Navbar = ({ toggleSidebar }) => {
           <div style={{
             width: 40, height: 40, borderRadius: 12,
             overflow: 'hidden', flexShrink: 0,
-            background: 'rgba(212, 175, 55, 0.1)',
-            boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
+            background: 'rgba(255, 255, 255, 0.95)',
+            boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)',
+            border: '2px solid rgba(212, 175, 55, 0.6)',
             padding: '4px'
           }}>
             <img src="/logo.png" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
