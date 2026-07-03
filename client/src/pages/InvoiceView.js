@@ -31,9 +31,14 @@ const InvoiceView = () => {
         api.get('/company')
       ]);
       const inv = invRes.data.data;
+      const comp = compRes.data.data;
       setInvoice(inv);
-      setCompany(compRes.data.data);
+      setCompany(comp);
       if (inv.party) setParty(typeof inv.party === 'object' ? inv.party : null);
+      
+      if (comp && comp.defaultTemplate) {
+        setTemplate(comp.defaultTemplate);
+      }
     } catch (err) {
       toast.error('Failed to load invoice');
       navigate('/invoices');

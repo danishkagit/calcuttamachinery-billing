@@ -1,168 +1,130 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import api from '../utils/api';
+import InvoiceTemplate from '../components/InvoiceTemplate';
+import Loading from '../components/Loading';
+
+const dummyInvoice = {
+  invoiceNo: 'INV-001',
+  invoiceDate: new Date().toISOString(),
+  dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+  invoiceType: 'Tax Invoice',
+  items: [
+    { description: 'Sample Product A', hsnCode: '1234', quantity: 2, rate: 1000, taxableValue: 2000, cgst: 180, sgst: 180 },
+    { description: 'Sample Service B', hsnCode: '5678', quantity: 1, rate: 500, taxableValue: 500, cgst: 45, sgst: 45 }
+  ],
+  subtotal: 2500,
+  cgstTotal: 225,
+  sgstTotal: 225,
+  igstTotal: 0,
+  grandTotal: 2950,
+  amountInWords: 'Two Thousand Nine Hundred Fifty Only'
+};
+
+const dummyParty = {
+  name: 'Customer Pvt Ltd',
+  address: '456 Client Road',
+  city: 'Mumbai',
+  state: 'Maharashtra',
+  gstin: '27ABCDE1234F1Z5'
+};
 
 const TemplateSettings = () => {
-  const [saving, setSaving] = useState(false);
-  const [settings, setSettings] = useState({
-    themeColor: '#d4a843',
-    fontStyle: 'Outfit',
-    showLogo: true,
-    showSignature: true,
-    showBankDetails: true,
-    showTerms: true,
-    footerText: 'Thank you for your business!'
-  });
+  const [company, setCompany] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(null);
+  
+  const templates = [
+    { id: 'classic', name: 'Classic (Standard)' },
+    { id: 'modern', name: 'Modern (Clean & Bold)' },
+    { id: 'minimal', name: 'Minimal (Sleek)' },
+    { id: 'tally', name: 'Tally ERP 9 (Tabular)' }
+  ];
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setSettings({
-      ...settings,
-      [name]: type === 'checkbox' ? checked : value
-    });
+  useEffect(() => {
+    fetchCompany();
+  }, []);
+
+  const fetchCompany = async () => {
+    try {
+      const res = await api.get('/company');
+      setCompany(res.data.data);
+    } catch (err) {
+      toast.error('Failed to load company settings');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSaving(true);
-    // Simulate API call
-    setTimeout(() => {
-      setSaving(false);
-      toast.success('Invoice template settings saved successfully!');
-    }, 800);
+  const handleSetDefault = async (templateId) => {
+    if (!company || !company._id) return;
+    setSaving(templateId);
+    try {
+      const res = await api.put(`/company/${company._id}`, { defaultTemplate: templateId });
+      setCompany(res.data.data);
+      toast.success('Default template updated successfully!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update default template');
+    } finally {
+      setSaving(null);
+    }
   };
+
+  if (loading) return <Loading />;
 
   return (
     <div className="template-settings-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h4 className="fw-bold mb-0">Invoice Template Settings</h4>
+        <div>
+          <h4 className="fw-bold mb-1">Invoice Templates Gallery</h4>
+          <p className="text-muted small mb-0">Choose the default template for all your generated invoices.</p>
+        </div>
       </div>
 
       <div className="row g-4">
-        <div className="col-lg-8">
-          <div className="card border-0 shadow-sm mb-4">
-            <div className="card-header bg-transparent py-3">
-              <h6 className="fw-bold mb-0"><i className="fas fa-paint-brush me-2"></i>Appearance</h6>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label className="form-label fw-semibold small">Theme Color</label>
-                    <div className="d-flex align-items-center gap-3">
-                      <input type="color" className="form-control form-control-color bg-dark border-secondary" name="themeColor" value={settings.themeColor} onChange={handleChange} title="Choose your color" />
-                      <span className="text-muted small">{settings.themeColor}</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-semibold small">Font Style</label>
-                    <select className="form-select" name="fontStyle" value={settings.fontStyle} onChange={handleChange}>
-                      <option value="Outfit">Outfit (Modern)</option>
-                      <option value="Space Grotesk">Space Grotesk (Futuristic)</option>
-                      <option value="Inter">Inter (Clean)</option>
-                      <option value="Roboto">Roboto (Standard)</option>
-                    </select>
-                  </div>
+        {templates.map(tmpl => {
+          const isDefault = company?.defaultTemplate === tmpl.id || (!company?.defaultTemplate && tmpl.id === 'classic');
+          
+          return (
+            <div className="col-lg-6" key={tmpl.id}>
+              <div className={`card h-100 border-0 shadow-sm ${isDefault ? 'border-primary' : ''}`} style={isDefault ? { border: '2px solid var(--primary-color) !important', boxShadow: '0 0 15px rgba(212, 168, 67, 0.2)' } : {}}>
+                <div className="card-header bg-transparent py-3 d-flex justify-content-between align-items-center border-bottom-0">
+                  <h6 className="fw-bold mb-0">
+                    {isDefault && <i className="fas fa-check-circle text-primary me-2"></i>}
+                    {tmpl.name}
+                  </h6>
+                  <button 
+                    className={`btn btn-sm ${isDefault ? 'btn-success' : 'btn-outline-primary'}`}
+                    disabled={isDefault || saving === tmpl.id}
+                    onClick={() => handleSetDefault(tmpl.id)}
+                  >
+                    {saving === tmpl.id ? <span className="spinner-border spinner-border-sm"></span> : isDefault ? 'Current Default' : 'Set as Default'}
+                  </button>
                 </div>
-
-                <hr className="my-4" style={{ borderColor: 'var(--glass-border)' }} />
-                
-                <h6 className="fw-bold mb-3"><i className="fas fa-toggle-on me-2"></i>Visibility Options</h6>
-                
-                <div className="row g-3 mb-4">
-                  <div className="col-md-6">
-                    <div className="form-check form-switch">
-                      <input className="form-check-input" type="checkbox" id="showLogo" name="showLogo" checked={settings.showLogo} onChange={handleChange} />
-                      <label className="form-check-label" htmlFor="showLogo">Show Company Logo</label>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-check form-switch">
-                      <input className="form-check-input" type="checkbox" id="showSignature" name="showSignature" checked={settings.showSignature} onChange={handleChange} />
-                      <label className="form-check-label" htmlFor="showSignature">Show Authorized Signature Line</label>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-check form-switch">
-                      <input className="form-check-input" type="checkbox" id="showBankDetails" name="showBankDetails" checked={settings.showBankDetails} onChange={handleChange} />
-                      <label className="form-check-label" htmlFor="showBankDetails">Show Bank Details</label>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-check form-switch">
-                      <input className="form-check-input" type="checkbox" id="showTerms" name="showTerms" checked={settings.showTerms} onChange={handleChange} />
-                      <label className="form-check-label" htmlFor="showTerms">Show Terms & Conditions</label>
+                <div className="card-body p-3 bg-light">
+                  <div 
+                    className="template-preview-container bg-white shadow-sm border rounded"
+                    style={{
+                      height: '400px',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      pointerEvents: 'none'
+                    }}
+                  >
+                    <div style={{ transform: 'scale(0.55)', transformOrigin: 'top left', width: '181%', height: '181%' }}>
+                      <InvoiceTemplate 
+                        template={tmpl.id} 
+                        invoice={dummyInvoice} 
+                        company={company || { businessName: 'Your Company Name' }} 
+                        party={dummyParty} 
+                      />
                     </div>
                   </div>
                 </div>
-
-                <hr className="my-4" style={{ borderColor: 'var(--glass-border)' }} />
-
-                <div className="mb-4">
-                  <label className="form-label fw-semibold small">Footer Text / Thank You Message</label>
-                  <input type="text" className="form-control" name="footerText" value={settings.footerText} onChange={handleChange} placeholder="e.g. Thank you for your business!" />
-                </div>
-
-                <button type="submit" className="btn btn-primary" disabled={saving}>
-                  <i className="fas fa-save me-2"></i>{saving ? 'Saving...' : 'Save Settings'}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-lg-4">
-          <div className="card border-0 shadow-sm">
-            <div className="card-header bg-transparent py-3">
-              <h6 className="fw-bold mb-0"><i className="fas fa-eye me-2"></i>Preview</h6>
-            </div>
-            <div className="card-body p-4 text-center">
-              <div 
-                className="preview-box border rounded p-4 mx-auto" 
-                style={{ 
-                  backgroundColor: 'rgba(255,255,255,0.02)',
-                  borderColor: settings.themeColor,
-                  borderTopWidth: '4px',
-                  fontFamily: settings.fontStyle
-                }}
-              >
-                {settings.showLogo && (
-                  <div className="mb-3">
-                    <i className="fas fa-building fa-2x" style={{ color: settings.themeColor }}></i>
-                  </div>
-                )}
-                <h5 className="fw-bold mb-1" style={{ color: settings.themeColor }}>INVOICE</h5>
-                <p className="small text-muted mb-4">#INV-2026-001</p>
-                
-                <div className="d-flex justify-content-between text-start small mb-3">
-                  <div>
-                    <strong>Billed To:</strong><br />
-                    Customer Name
-                  </div>
-                  <div className="text-end">
-                    <strong>Amount:</strong><br />
-                    ₹ 1,500.00
-                  </div>
-                </div>
-                
-                {settings.showBankDetails && (
-                  <div className="text-start small p-2 rounded mb-3" style={{ backgroundColor: 'rgba(212, 168, 67, 0.05)', border: '1px solid rgba(212, 168, 67, 0.2)' }}>
-                    <strong>Bank Details:</strong><br/>
-                    A/C No: XXXX-XXXX-1234
-                  </div>
-                )}
-
-                {settings.showSignature && (
-                  <div className="mt-4 pt-4 border-top text-end small">
-                    <span className="text-muted">Authorized Signatory</span>
-                  </div>
-                )}
-              </div>
-              <div className="mt-3 small text-muted fst-italic">
-                {settings.footerText}
               </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </div>
   );

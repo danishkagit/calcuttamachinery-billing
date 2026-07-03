@@ -72,6 +72,11 @@ const companySchema = new mongoose.Schema({
     trim: true,
     default: 'INV-'
   },
+  defaultTemplate: {
+    type: String,
+    trim: true,
+    default: 'classic'
+  },
   lastInvoiceNo: {
     type: Number,
     default: 0
