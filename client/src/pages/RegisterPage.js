@@ -96,7 +96,11 @@ const RegisterPage = () => {
             <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
               <p className="mb-0" style={{ fontSize: '0.72rem', lineHeight: '1.5', color: 'var(--text-dim)' }}>
                 <i className="fas fa-industry me-1" style={{ color: 'var(--primary)' }}></i>
-                Manufacturer of Aluminium Sliver Cans for Jute & Twine Mills
+                Manufactures & Repairs Aluminium Sliver Can & Their Accessories
+              </p>
+              <p className="mb-0 mt-1" style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>
+                <i className="fas fa-map-marker-alt me-1" style={{ color: 'var(--primary)' }}></i>
+                Regd: 15, Dr. Noorie Lane No.1, Champdani, Baidyabati, Hooghly, WB-712222
               </p>
             </div>
           </div>

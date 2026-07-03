@@ -28,6 +28,16 @@ const styles = {
     accentColor: '#10b981',
     borderColor: '#e2e8f0',
     fontFamily: "'Inter', sans-serif",
+  },
+  professional: {
+    headerBg: '#0c1a2b',
+    headerText: '#ffffff',
+    tableHeaderBg: '#0c1a2b',
+    tableHeaderText: '#ffffff',
+    accentColor: '#2563eb',
+    borderColor: '#d1d5db',
+    fontFamily: "'Inter', 'Segoe UI', sans-serif",
+    lightBg: '#f8fafc',
   }
 };
 

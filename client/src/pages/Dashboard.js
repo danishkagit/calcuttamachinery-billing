@@ -88,7 +88,7 @@ const Dashboard = () => {
             </h4>
             <p className="mb-2" style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
               <i className="fas fa-industry me-2" style={{ color: 'var(--primary)' }}></i>
-              Manufacturer of Aluminium Sliver Cans for Jute & Twine Mills
+              Manufactures & Repairs Aluminium Sliver Can & Their Accessories
             </p>
             <span className="company-gstin">
               <i className="fas fa-id-card me-1"></i> GSTIN: 19ALUPS4733P1ZW

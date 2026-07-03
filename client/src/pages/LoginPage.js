@@ -64,11 +64,11 @@ const LoginPage = () => {
             <h1 className="fw-bold mt-3" style={{ fontFamily: 'Space Grotesk, sans-serif', color: '#fff' }}>Calcutta Machinery</h1>
             <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', letterSpacing: '1px', color: 'var(--text-muted)', fontWeight: 600 }}>
               <i className="fas fa-industry me-2" style={{ color: 'var(--primary)' }}></i>
-              ALUMINIUM SLIVER CAN MANUFACTURER
+              MANUFACTURES & REPAIRS ALUMINIUM SLIVER CAN & THEIR ACCESSORIES
             </p>
             <p className="mt-3" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
               <i className="fas fa-leaf me-2" style={{ color: 'var(--primary)' }}></i>
-              Professional GST billing & invoicing for Jute & Twine mill suppliers.
+              Professional GST billing & invoicing for aluminium sliver can manufacturing & repair.
             </p>
             <div className="auth-features mt-4">
               <div className="auth-feature">
@@ -91,7 +91,17 @@ const LoginPage = () => {
             <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
               <p className="mb-0" style={{ fontSize: '0.72rem', lineHeight: '1.5', color: 'var(--text-dim)' }}>
                 <i className="fas fa-map-marker-alt me-1" style={{ color: 'var(--primary)' }}></i>
-                15, Dr. Noorie Lane No.1, Champdani, Baidyabati, Hooghly, WB-712222
+                <strong>Regd Off:</strong> 15, Dr. Noorie Lane No.1, Champdani, Baidyabati, Hooghly, WB-712222 &nbsp;
+                <a href="https://maps.app.goo.gl/JScUieqZHGStKEUt6" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontSize: '0.68rem' }}>
+                  <i className="fas fa-map-pin"></i> Map
+                </a>
+              </p>
+              <p className="mb-0" style={{ fontSize: '0.72rem', lineHeight: '1.5', color: 'var(--text-dim)' }}>
+                <i className="fas fa-industry me-1" style={{ color: 'var(--primary)' }}></i>
+                <strong>Work:</strong> 09, R.B.S Road, Karahikal, Baidyabati, Hooghly, WB-712222 &nbsp;
+                <a href="https://maps.app.goo.gl/pBSv9YcdENCvQktq8" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontSize: '0.68rem' }}>
+                  <i className="fas fa-map-pin"></i> Map
+                </a>
               </p>
               <p className="mb-0" style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
                 <i className="fas fa-id-card me-1" style={{ color: 'var(--primary)' }}></i>
