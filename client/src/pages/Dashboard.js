@@ -23,6 +23,48 @@ const Dashboard = () => {
     }
   };
 
+  const TiltCard = ({ children, className }) => {
+    const [style, setStyle] = useState({});
+    
+    const handleMouseMove = (e) => {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg
+      const rotateY = ((x - centerX) / centerX) * 10;
+      
+      setStyle({
+        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`,
+        transition: 'none',
+        zIndex: 10
+      });
+    };
+    
+    const handleMouseLeave = () => {
+      setStyle({
+        transform: 'perspective(1000px) rotateX(0) rotateY(0) scale(1)',
+        transition: 'transform 0.5s ease',
+        zIndex: 1
+      });
+    };
+
+    return (
+      <div 
+        className={className} 
+        style={style} 
+        onMouseMove={handleMouseMove} 
+        onMouseLeave={handleMouseLeave}
+      >
+        {children}
+      </div>
+    );
+  };
+
   if (loading) return <Loading />;
 
   const stats = data || {};
@@ -42,60 +84,61 @@ const Dashboard = () => {
       <div className="dashboard-welcome">
         <div className="d-flex justify-content-between align-items-start">
           <div>
-            <h4 className="mb-1 d-flex align-items-center" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, gap: '12px' }}>
+            <h4 className="mb-1 d-flex align-items-center" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, gap: '15px', color: 'var(--primary)' }}>
               <img src="/logo.png" alt="CM" style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                background: '#ffffff',
-                padding: '2px',
+                width: 44,
+                height: 44,
+                borderRadius: '12px',
+                background: 'rgba(212, 175, 55, 0.1)',
+                padding: '4px',
                 objectFit: 'contain',
-                boxShadow: '0 4px 12px rgba(255,255,255,0.15)'
+                boxShadow: '0 0 20px rgba(212, 175, 55, 0.2)',
+                border: '1px solid rgba(212, 175, 55, 0.3)'
               }} />
-              Calcutta Machinery
+              <span style={{ textShadow: '0 2px 10px rgba(212, 175, 55, 0.3)' }}>Calcutta Machinery</span>
             </h4>
-            <p className="mb-2">Manufacturer of Aluminium Sliver Cans for Jute & Twine Mills</p>
-            <span className="company-gstin">GSTIN: 19ALUPS4733P1ZW</span>
+            <p className="mb-2 text-muted" style={{ fontSize: '0.95rem' }}>Manufacturer of Aluminium Sliver Cans for Jute & Twine Mills</p>
+            <span className="company-gstin" style={{ background: 'rgba(212, 175, 55, 0.1)', color: 'var(--primary)', padding: '4px 12px', borderRadius: '20px', border: '1px solid var(--glass-border)', fontSize: '0.8rem', fontWeight: 600 }}>GSTIN: 19ALUPS4733P1ZW</span>
           </div>
-          <div className="d-none d-md-flex gap-2" style={{ position: 'relative', zIndex: 1 }}>
-            <Link to="/invoices/create" className="btn text-white" style={{ background: 'linear-gradient(135deg, #27272a, #09090b)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 14px rgba(9,9,11,0.15)' }}>
-              <i className="fas fa-plus me-1"></i>New Invoice
+          <div className="d-none d-md-flex gap-3 align-items-center" style={{ position: 'relative', zIndex: 1 }}>
+            <Link to="/invoices/create" className="btn btn-primary" style={{ boxShadow: '0 4px 15px var(--primary-glow)' }}>
+              <i className="fas fa-plus me-2"></i>New Invoice
             </Link>
-            <Link to="/parties/add" className="btn text-white" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
-              <i className="fas fa-user-plus me-1"></i>Add Party
+            <Link to="/parties/add" className="btn btn-outline-primary">
+              <i className="fas fa-user-plus me-2"></i>Add Party
             </Link>
-            <Link to="/products/add" className="btn text-white" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
-              <i className="fas fa-box me-1"></i>Add Product
+            <Link to="/products/add" className="btn btn-outline-primary">
+              <i className="fas fa-box me-2"></i>Add Product
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="row g-3 mb-4">
+      <div className="row g-3 mb-4 mt-2">
         {statCards.map((card, i) => (
           <div className={`col-xl col-md-4 col-sm-6 section-fade delay-${card.delay}`} key={i}>
-            <div className="stat-card h-100">
+            <TiltCard className="stat-card h-100">
               <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start">
+                <div className="d-flex justify-content-between align-items-center">
                   <div>
-                    <p className="stat-label text-muted mb-2 small">{card.label}</p>
-                    <h4 className="fw-bold mb-0" style={{ fontFamily: "'Outfit', sans-serif" }}>{formatCurrency(card.value)}</h4>
+                    <p className="stat-label mb-2 small" style={{ color: 'var(--text-muted)' }}>{card.label}</p>
+                    <h4 className="fw-bold mb-0 text-white" style={{ fontFamily: "'Outfit', sans-serif" }}>{formatCurrency(card.value)}</h4>
                   </div>
-                  <div className={`stat-icon bg-${card.bg}`}>
-                    <i className={`${card.icon} text-${card.color}`} style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}></i>
+                  <div className="stat-icon" style={{ background: 'rgba(212, 175, 55, 0.1)', border: '1px solid var(--glass-border)' }}>
+                    <i className={`${card.icon}`} style={{ color: 'var(--primary)', filter: 'drop-shadow(0 2px 10px var(--primary-glow))' }}></i>
                   </div>
                 </div>
               </div>
-            </div>
+            </TiltCard>
           </div>
         ))}
       </div>
 
-      <div className="row g-4">
+      <div className="row g-4 mb-4">
         <div className="col-lg-8 section-fade delay-3">
           <div className="card h-100">
-            <div className="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
-              <h6 className="fw-bold mb-0">Recent Invoices</h6>
+            <div className="card-header border-bottom d-flex justify-content-between align-items-center py-3" style={{ background: 'rgba(15, 17, 26, 0.4)', borderColor: 'var(--glass-border)' }}>
+              <h6 className="fw-bold mb-0 text-white">Recent Invoices</h6>
               <Link to="/invoices" className="btn btn-sm btn-outline-primary">View All</Link>
             </div>
             <div className="card-body p-0">
@@ -140,8 +183,8 @@ const Dashboard = () => {
         </div>
         <div className="col-lg-4 section-fade delay-4">
           <div className="card h-100">
-            <div className="card-header d-flex justify-content-between align-items-center py-3">
-              <h6 className="fw-bold mb-0"><i className="fas fa-credit-card me-2" style={{ color: 'var(--primary)' }}></i>Today's Payments</h6>
+            <div className="card-header border-bottom d-flex justify-content-between align-items-center py-3" style={{ background: 'rgba(15, 17, 26, 0.4)', borderColor: 'var(--glass-border)' }}>
+              <h6 className="fw-bold mb-0 text-white"><i className="fas fa-credit-card me-2" style={{ color: 'var(--primary)' }}></i>Today's Payments</h6>
             </div>
             <div className="card-body">
               {todayPayments.length === 0 ? (
@@ -159,12 +202,12 @@ const Dashboard = () => {
                 </div>
               ) : (
                 todayPayments.map((p) => (
-                  <div key={p._id} className="d-flex justify-content-between align-items-center py-3" style={{ borderBottom: '1px solid rgba(0,0,0,0.03)' }}>
+                  <div key={p._id} className="d-flex justify-content-between align-items-center py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
                     <div>
-                      <p className="mb-0 fw-bold" style={{ color: 'var(--success)' }}>{formatCurrency(p.amount)}</p>
+                      <p className="mb-0 fw-bold text-white">{formatCurrency(p.amount)}</p>
                       <small className="text-muted">{p.paymentMethod}{p.reference ? ` - ${p.reference}` : ''}</small>
                     </div>
-                    <span className="badge" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>{formatDate(p.paymentDate)}</span>
+                    <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>{formatDate(p.paymentDate)}</span>
                   </div>
                 ))
               )}

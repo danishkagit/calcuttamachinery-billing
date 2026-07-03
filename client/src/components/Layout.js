@@ -61,23 +61,24 @@ const Layout = ({ children }) => {
             position: 'fixed',
             bottom: '20px',
             right: '20px',
-            background: 'rgba(255, 255, 255, 0.95)',
+            background: 'var(--glass-bg)',
+            backdropFilter: 'blur(20px)',
             padding: '12px 18px',
-            borderRadius: '10px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05)',
+            border: '1px solid var(--glass-border)',
             fontSize: '0.85rem',
-            color: '#475569',
+            color: 'var(--text-main)',
             zIndex: 1000,
             lineHeight: '1.6'
           }}>
-            <div style={{ fontWeight: 700, marginBottom: '8px', color: '#1e293b' }}>
+            <div style={{ fontWeight: 700, marginBottom: '8px', color: 'var(--primary)', textShadow: '0 2px 10px rgba(212, 175, 55, 0.2)' }}>
               <i className="fas fa-keyboard me-2"></i>Keyboard Shortcuts
             </div>
-            <div><kbd style={{ background: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1' }}>Alt + B</kbd> <span className="ms-2">New Billing</span></div>
-            <div><kbd style={{ background: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1' }}>Alt + A</kbd> <span className="ms-2">Analysis / Dashboard</span></div>
-            <div><kbd style={{ background: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1' }}>Alt + P</kbd> <span className="ms-2">Add Product</span></div>
-            <div><kbd style={{ background: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1' }}>Alt + S</kbd> <span className="ms-2">Add Service</span></div>
+            <div><kbd style={{ background: 'rgba(15, 17, 26, 0.8)', color: 'var(--primary)', border: '1px solid rgba(212, 175, 55, 0.3)' }}>Alt + B</kbd> <span className="ms-2">New Billing</span></div>
+            <div><kbd style={{ background: 'rgba(15, 17, 26, 0.8)', color: 'var(--primary)', border: '1px solid rgba(212, 175, 55, 0.3)' }}>Alt + A</kbd> <span className="ms-2">Analysis / Dashboard</span></div>
+            <div><kbd style={{ background: 'rgba(15, 17, 26, 0.8)', color: 'var(--primary)', border: '1px solid rgba(212, 175, 55, 0.3)' }}>Alt + P</kbd> <span className="ms-2">Add Product</span></div>
+            <div><kbd style={{ background: 'rgba(15, 17, 26, 0.8)', color: 'var(--primary)', border: '1px solid rgba(212, 175, 55, 0.3)' }}>Alt + S</kbd> <span className="ms-2">Add Service</span></div>
           </div>
         </main>
       </div>

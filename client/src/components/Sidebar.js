@@ -89,12 +89,17 @@ const Sidebar = ({ isOpen, onClose }) => {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-brand">
-            <div className="sidebar-brand-logo" style={{ background: '#fff', padding: '2px' }}>
+            <div className="sidebar-brand-logo" style={{ 
+              background: 'rgba(212, 175, 55, 0.1)', 
+              padding: '4px',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)'
+            }}>
               <img src="/logo.png" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div className="d-flex flex-column lh-1">
-              <span className="fw-bold" style={{ fontSize: '0.95rem', fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.3px' }}>Calcutta Machinery</span>
-              <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.8px', fontWeight: 600, textTransform: 'uppercase', marginTop: '2px' }}>GST BILLING</span>
+              <span className="fw-bold" style={{ fontSize: '1rem', fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.3px', color: 'var(--primary)', textShadow: '0 2px 10px rgba(212, 175, 55, 0.3)' }}>Calcutta Machinery</span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', letterSpacing: '1px', fontWeight: 700, textTransform: 'uppercase', marginTop: '4px' }}>GST BILLING</span>
             </div>
           </div>
           <button className="btn btn-link text-white d-lg-none" onClick={onClose}>
