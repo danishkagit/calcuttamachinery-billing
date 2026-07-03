@@ -38,7 +38,7 @@ const RegisterPage = () => {
       toast.success('Account created successfully!');
       navigate('/');
     } catch (err) {
-      const msg = err.response?.data?.message || 'Registration failed';
+      const msg = err.response?.data?.error || 'Registration failed';
       setError(msg);
       toast.error(msg);
     } finally {
@@ -54,11 +54,32 @@ const RegisterPage = () => {
             <div className="auth-logo">
               <img src="/logo.png" alt="Calcutta Machinery" />
             </div>
-            <h1 className="text-white fw-bold mt-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>Get Started</h1>
-            <p className="text-white-50 mt-2">Create your account and start managing your GST billing for Calcutta Machinery effortlessly.</p>
-            <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-              <p className="mb-0 text-white-50" style={{ fontSize: '0.72rem', lineHeight: '1.5' }}>
-                <i className="fas fa-industry me-1"></i>
+            <h1 className="fw-bold mt-3" style={{ fontFamily: 'Space Grotesk, sans-serif', color: '#fff' }}>Get Started</h1>
+            <p className="mt-3" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+              <i className="fas fa-rocket me-2" style={{ color: 'var(--primary)' }}></i>
+              Create your account and start managing GST billing for Calcutta Machinery.
+            </p>
+            <div className="auth-features mt-4">
+              <div className="auth-feature">
+                <i className="fas fa-check-circle me-2"></i>
+                <span>GST Compliant Invoices</span>
+              </div>
+              <div className="auth-feature">
+                <i className="fas fa-check-circle me-2"></i>
+                <span>Auto GSTR-1 & GSTR-3B Reports</span>
+              </div>
+              <div className="auth-feature">
+                <i className="fas fa-check-circle me-2"></i>
+                <span>Party & Product Management</span>
+              </div>
+              <div className="auth-feature">
+                <i className="fas fa-check-circle me-2"></i>
+                <span>Payment Tracking & Outstanding</span>
+              </div>
+            </div>
+            <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
+              <p className="mb-0" style={{ fontSize: '0.72rem', lineHeight: '1.5', color: 'var(--text-dim)' }}>
+                <i className="fas fa-industry me-1" style={{ color: 'var(--primary)' }}></i>
                 Manufacturer of Aluminium Sliver Cans for Jute & Twine Mills
               </p>
             </div>
@@ -67,39 +88,39 @@ const RegisterPage = () => {
         <div className="auth-right">
           <div className="auth-form-wrapper">
             <h3 className="fw-bold mb-1">Create Account</h3>
-            <p className="text-muted mb-4">Fill in the details to register</p>
+            <p className="mb-4" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Fill in the details to register</p>
             {error && <div className="alert alert-danger py-2 small">{error}</div>}
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="form-label fw-semibold small">Full Name *</label>
+                <label className="form-label">Full Name *</label>
                 <div className="input-group">
                   <span className="input-group-text"><i className="fas fa-user"></i></span>
                   <input type="text" name="name" className="form-control" placeholder="Your name" value={form.name} onChange={handleChange} disabled={loading} />
                 </div>
               </div>
               <div className="mb-3">
-                <label className="form-label fw-semibold small">Email *</label>
+                <label className="form-label">Email *</label>
                 <div className="input-group">
                   <span className="input-group-text"><i className="fas fa-envelope"></i></span>
                   <input type="email" name="email" className="form-control" placeholder="Your email" value={form.email} onChange={handleChange} disabled={loading} />
                 </div>
               </div>
               <div className="mb-3">
-                <label className="form-label fw-semibold small">Phone</label>
+                <label className="form-label">Phone</label>
                 <div className="input-group">
                   <span className="input-group-text"><i className="fas fa-phone"></i></span>
                   <input type="text" name="phone" className="form-control" placeholder="Phone number" value={form.phone} onChange={handleChange} disabled={loading} />
                 </div>
               </div>
               <div className="mb-3">
-                <label className="form-label fw-semibold small">Password *</label>
+                <label className="form-label">Password *</label>
                 <div className="input-group">
                   <span className="input-group-text"><i className="fas fa-lock"></i></span>
                   <input type="password" name="password" className="form-control" placeholder="Min 6 characters" value={form.password} onChange={handleChange} disabled={loading} />
                 </div>
               </div>
               <div className="mb-4">
-                <label className="form-label fw-semibold small">Confirm Password *</label>
+                <label className="form-label">Confirm Password *</label>
                 <div className="input-group">
                   <span className="input-group-text"><i className="fas fa-lock"></i></span>
                   <input type="password" name="confirmPassword" className="form-control" placeholder="Confirm password" value={form.confirmPassword} onChange={handleChange} disabled={loading} />
@@ -109,7 +130,7 @@ const RegisterPage = () => {
                 {loading ? <><span className="spinner-border spinner-border-sm me-2"></span>Creating...</> : 'Create Account'}
               </button>
             </form>
-            <p className="text-center mt-4 mb-0 small">
+            <p className="text-center mt-4 mb-0 small" style={{ color: 'var(--text-muted)' }}>
               Already have an account? <Link to="/login" className="fw-semibold" style={{ color: 'var(--primary)' }}>Sign In</Link>
             </p>
           </div>

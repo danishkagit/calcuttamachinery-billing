@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const { protect } = require('../middleware/auth');
 
 const GST_API_BASE = 'https://services.gst.gov.in/services/api/search';
 
@@ -20,7 +21,7 @@ function extractAddress(pradr) {
   };
 }
 
-router.get('/:gstin', async (req, res) => {
+router.get('/:gstin', protect, async (req, res) => {
   try {
     const { gstin } = req.params;
 

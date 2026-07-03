@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const Invoice = require('../models/Invoice');
 const Party = require('../models/Party');
+const { protect } = require('../middleware/auth');
 
 const GST_API_BASE = 'https://services.gst.gov.in/services/api';
 
@@ -25,7 +26,7 @@ async function getInvoicesForPeriod(year, month) {
 }
 
 // GET /api/gst/gstr1/:year/:month - Generate GSTR-1 JSON
-router.get('/gstr1/:year/:month', async (req, res) => {
+router.get('/gstr1/:year/:month', protect, async (req, res) => {
   try {
     const { year, month } = req.params;
     const invoices = await getInvoicesForPeriod(Number(year), Number(month));
@@ -155,7 +156,7 @@ router.get('/gstr1/:year/:month', async (req, res) => {
 });
 
 // GET /api/gst/gstr3b/:year/:month - Generate GSTR-3B JSON
-router.get('/gstr3b/:year/:month', async (req, res) => {
+router.get('/gstr3b/:year/:month', protect, async (req, res) => {
   try {
     const { year, month } = req.params;
     const invoices = await getInvoicesForPeriod(Number(year), Number(month));
@@ -263,7 +264,7 @@ router.get('/gstr3b/:year/:month', async (req, res) => {
 });
 
 // POST /api/gst/auth/request-otp
-router.post('/auth/request-otp', async (req, res) => {
+router.post('/auth/request-otp', protect, async (req, res) => {
   try {
     const { username, gstin } = req.body;
     if (!username || !gstin) {
@@ -287,7 +288,7 @@ router.post('/auth/request-otp', async (req, res) => {
 });
 
 // POST /api/gst/auth/authenticate
-router.post('/auth/authenticate', async (req, res) => {
+router.post('/auth/authenticate', protect, async (req, res) => {
   try {
     const { username, password, gstin } = req.body;
     if (!username || !password || !gstin) {
@@ -311,7 +312,7 @@ router.post('/auth/authenticate', async (req, res) => {
 });
 
 // POST /api/gst/gstr1/file - File GSTR-1 via GST portal
-router.post('/gstr1/file', async (req, res) => {
+router.post('/gstr1/file', protect, async (req, res) => {
   try {
     const { token, gstin, fp, returnData, action } = req.body;
     if (!token || !gstin || !fp || !returnData) {
@@ -340,7 +341,7 @@ router.post('/gstr1/file', async (req, res) => {
 });
 
 // POST /api/gst/gstr3b/file - File GSTR-3B via GST portal
-router.post('/gstr3b/file', async (req, res) => {
+router.post('/gstr3b/file', protect, async (req, res) => {
   try {
     const { token, gstin, fp, returnData, action } = req.body;
     if (!token || !gstin || !fp || !returnData) {
@@ -371,11 +372,11 @@ router.post('/gstr3b/file', async (req, res) => {
 // In-memory filing history (replace with DB model for persistence)
 let filingHistory = [];
 
-router.get('/filing-history', (req, res) => {
+router.get('/filing-history', protect, (req, res) => {
   res.json({ success: true, data: filingHistory.sort((a, b) => new Date(b.filedAt) - new Date(a.filedAt)) });
 });
 
-router.post('/filing-history', (req, res) => {
+router.post('/filing-history', protect, (req, res) => {
   const record = {
     _id: Date.now().toString(),
     ...req.body,

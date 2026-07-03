@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Company = require('../models/Company');
+const { protect } = require('../middleware/auth');
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -11,7 +12,7 @@ const validate = (req, res, next) => {
   next();
 };
 
-router.post('/', [
+router.post('/', protect, [
   body('businessName').notEmpty().withMessage('Business name is required'),
 ], validate, async (req, res) => {
   try {
@@ -22,7 +23,7 @@ router.post('/', [
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', protect, async (req, res) => {
   try {
     const companies = await Company.find().sort({ createdAt: -1 });
     res.json({ success: true, data: companies[0] || null });
@@ -31,7 +32,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', protect, async (req, res) => {
   try {
     const company = await Company.findByIdAndUpdate(
       req.params.id,

@@ -4,6 +4,7 @@ const Invoice = require('../models/Invoice');
 const Party = require('../models/Party');
 const Product = require('../models/Product');
 const Payment = require('../models/Payment');
+const { protect } = require('../middleware/auth');
 
 const getDateFilter = (startDate, endDate) => {
   const filter = {};
@@ -20,7 +21,7 @@ const getDateFilter = (startDate, endDate) => {
   return filter;
 };
 
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', protect, async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -81,7 +82,7 @@ router.get('/dashboard', async (req, res) => {
   }
 });
 
-router.get('/sales', async (req, res) => {
+router.get('/sales', protect, async (req, res) => {
   try {
     const filter = { invoiceType: { $ne: 'Credit Note' } };
     const dateFilter = getDateFilter(req.query.startDate, req.query.endDate);
@@ -126,7 +127,7 @@ router.get('/sales', async (req, res) => {
   }
 });
 
-router.get('/purchases', async (req, res) => {
+router.get('/purchases', protect, async (req, res) => {
   try {
     const filter = {};
     const dateFilter = getDateFilter(req.query.startDate, req.query.endDate);
@@ -169,7 +170,7 @@ router.get('/purchases', async (req, res) => {
   }
 });
 
-router.get('/gstr1', async (req, res) => {
+router.get('/gstr1', protect, async (req, res) => {
   try {
     const dateFilter = getDateFilter(req.query.startDate, req.query.endDate);
     const filter = { ...dateFilter };
@@ -288,7 +289,7 @@ router.get('/gstr1', async (req, res) => {
   }
 });
 
-router.get('/gstr3b', async (req, res) => {
+router.get('/gstr3b', protect, async (req, res) => {
   try {
     const dateFilter = getDateFilter(req.query.startDate, req.query.endDate);
     const filter = { ...dateFilter };
@@ -350,7 +351,7 @@ router.get('/gstr3b', async (req, res) => {
   }
 });
 
-router.get('/party-outstanding', async (req, res) => {
+router.get('/party-outstanding', protect, async (req, res) => {
   try {
     const invoices = await Invoice.find({
       paymentStatus: { $ne: 'Paid' }

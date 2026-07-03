@@ -1,7 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+    onClose();
+  };
+
   const menuItems = [
     { path: '/', icon: 'fas fa-th-large', label: 'Dashboard' },
     {
@@ -89,20 +99,19 @@ const Sidebar = ({ isOpen, onClose }) => {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-brand">
-            <div className="sidebar-brand-logo" style={{ 
-              background: 'rgba(255, 255, 255, 0.95)', 
-              padding: '4px',
-              border: '2px solid rgba(212, 175, 55, 0.6)',
-              boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)'
+            <div className="sidebar-brand-logo" style={{
+              background: 'rgba(255, 255, 255, 0.95)',
+              border: '2px solid rgba(212, 168, 67, 0.5)',
+              boxShadow: '0 0 15px var(--primary-glow)'
             }}>
               <img src="/logo.png" alt="CM" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div className="d-flex flex-column lh-1">
-              <span className="fw-bold" style={{ fontSize: '1rem', fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.3px', color: 'var(--primary)', textShadow: '0 2px 10px rgba(212, 175, 55, 0.3)' }}>Calcutta Machinery</span>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', letterSpacing: '1px', fontWeight: 700, textTransform: 'uppercase', marginTop: '4px' }}>GST BILLING</span>
+              <span className="fw-bold" style={{ fontSize: '0.95rem', fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.3px', color: 'var(--primary)', textShadow: '0 2px 10px var(--primary-glow)' }}>Calcutta Machinery</span>
+              <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', letterSpacing: '1.5px', fontWeight: 700, textTransform: 'uppercase', marginTop: '4px' }}>GST BILLING</span>
             </div>
           </div>
-          <button className="btn btn-link text-white d-lg-none" onClick={onClose}>
+          <button className="btn btn-link text-white d-lg-none p-0" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -110,9 +119,39 @@ const Sidebar = ({ isOpen, onClose }) => {
           {menuItems.map((item, index) => renderMenuItem(item, index))}
         </ul>
         <div className="sidebar-footer">
-          <span className="gstin-badge">FREE GST Billing</span>
+          {user && (
+            <div className="mb-2" style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: 10, marginBottom: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <div style={{
+                  width: 24, height: 24, borderRadius: 6,
+                  background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#0b0c10', fontWeight: 800, fontSize: '0.65rem'
+                }}>
+                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+                <span style={{ color: 'var(--text-main)', fontWeight: 600, fontSize: '0.78rem' }}>{user.name}</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: 'none', border: '1px solid var(--glass-border)',
+                  borderRadius: 6, padding: '4px 10px',
+                  color: '#ef4444', cursor: 'pointer',
+                  fontSize: '0.72rem', fontWeight: 600,
+                  width: '100%', textAlign: 'center',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => { e.target.style.background = 'rgba(239,68,68,0.1)'; e.target.style.borderColor = 'rgba(239,68,68,0.3)' }}
+                onMouseLeave={(e) => { e.target.style.background = 'none'; e.target.style.borderColor = 'var(--glass-border)' }}
+              >
+                <i className="fas fa-sign-out-alt me-1"></i> Sign Out
+              </button>
+            </div>
+          )}
+          <div className="gstin-badge">FREE GST Billing</div>
           <div>Calcutta Machinery Billing</div>
-          <div>v1.0.0</div>
+          <div>v2.0.0</div>
         </div>
       </aside>
     </>

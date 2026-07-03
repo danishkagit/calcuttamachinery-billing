@@ -4,7 +4,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/AuthContext';
 import { CompanyProvider } from './context/CompanyContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
 import CompanySetup from './pages/CompanySetup';
 import PartyList from './pages/PartyList';
@@ -23,6 +26,12 @@ import OutstandingReport from './pages/OutstandingReport';
 import PaymentList from './pages/PaymentList';
 import GSTReturns from './pages/GSTReturns';
 
+const ProtectedLayout = ({ children }) => (
+  <ProtectedRoute>
+    <Layout>{children}</Layout>
+  </ProtectedRoute>
+);
+
 function App() {
   return (
     <AuthProvider>
@@ -36,28 +45,30 @@ function App() {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="light"
+          theme="dark"
         />
         <Routes>
-          <Route path="/" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/company" element={<Layout><CompanySetup /></Layout>} />
-          <Route path="/parties" element={<Layout><PartyList /></Layout>} />
-          <Route path="/parties/add" element={<Layout><PartyForm /></Layout>} />
-          <Route path="/parties/edit/:id" element={<Layout><PartyForm /></Layout>} />
-          <Route path="/products" element={<Layout><ProductList /></Layout>} />
-          <Route path="/products/add" element={<Layout><ProductForm /></Layout>} />
-          <Route path="/products/edit/:id" element={<Layout><ProductForm /></Layout>} />
-          <Route path="/invoices" element={<Layout><InvoiceList /></Layout>} />
-          <Route path="/invoices/create" element={<Layout><InvoiceCreate /></Layout>} />
-          <Route path="/invoices/:id" element={<Layout><InvoiceView /></Layout>} />
-          <Route path="/invoices/edit/:id" element={<Layout><InvoiceEdit /></Layout>} />
-          <Route path="/reports/sales" element={<Layout><SalesReport /></Layout>} />
-          <Route path="/reports/purchases" element={<Layout><PurchaseReport /></Layout>} />
-          <Route path="/reports/gstr1" element={<Layout><GSTR1Report /></Layout>} />
-          <Route path="/reports/gstr3b" element={<Layout><GSTR3BReport /></Layout>} />
-          <Route path="/reports/outstanding" element={<Layout><OutstandingReport /></Layout>} />
-          <Route path="/payments" element={<Layout><PaymentList /></Layout>} />
-          <Route path="/gst-returns" element={<Layout><GSTReturns /></Layout>} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
+          <Route path="/company" element={<ProtectedLayout><CompanySetup /></ProtectedLayout>} />
+          <Route path="/parties" element={<ProtectedLayout><PartyList /></ProtectedLayout>} />
+          <Route path="/parties/add" element={<ProtectedLayout><PartyForm /></ProtectedLayout>} />
+          <Route path="/parties/edit/:id" element={<ProtectedLayout><PartyForm /></ProtectedLayout>} />
+          <Route path="/products" element={<ProtectedLayout><ProductList /></ProtectedLayout>} />
+          <Route path="/products/add" element={<ProtectedLayout><ProductForm /></ProtectedLayout>} />
+          <Route path="/products/edit/:id" element={<ProtectedLayout><ProductForm /></ProtectedLayout>} />
+          <Route path="/invoices" element={<ProtectedLayout><InvoiceList /></ProtectedLayout>} />
+          <Route path="/invoices/create" element={<ProtectedLayout><InvoiceCreate /></ProtectedLayout>} />
+          <Route path="/invoices/:id" element={<ProtectedLayout><InvoiceView /></ProtectedLayout>} />
+          <Route path="/invoices/edit/:id" element={<ProtectedLayout><InvoiceEdit /></ProtectedLayout>} />
+          <Route path="/reports/sales" element={<ProtectedLayout><SalesReport /></ProtectedLayout>} />
+          <Route path="/reports/purchases" element={<ProtectedLayout><PurchaseReport /></ProtectedLayout>} />
+          <Route path="/reports/gstr1" element={<ProtectedLayout><GSTR1Report /></ProtectedLayout>} />
+          <Route path="/reports/gstr3b" element={<ProtectedLayout><GSTR3BReport /></ProtectedLayout>} />
+          <Route path="/reports/outstanding" element={<ProtectedLayout><OutstandingReport /></ProtectedLayout>} />
+          <Route path="/payments" element={<ProtectedLayout><PaymentList /></ProtectedLayout>} />
+          <Route path="/gst-returns" element={<ProtectedLayout><GSTReturns /></ProtectedLayout>} />
         </Routes>
       </CompanyProvider>
     </AuthProvider>

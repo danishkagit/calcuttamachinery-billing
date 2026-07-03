@@ -6,6 +6,7 @@ const Company = require('../models/Company');
 const Party = require('../models/Party');
 const Payment = require('../models/Payment');
 const amountInWords = require('../utils/amountInWords');
+const { protect } = require('../middleware/auth');
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -98,7 +99,7 @@ router.post('/', [
   body('party').notEmpty().withMessage('Party is required'),
   body('company').notEmpty().withMessage('Company is required'),
   body('items').isArray({ min: 1 }).withMessage('At least one item is required'),
-], validate, async (req, res) => {
+], protect, validate, async (req, res) => {
   try {
     const company = await Company.findById(req.body.company);
     if (!company) {
@@ -142,7 +143,7 @@ router.post('/', [
   }
 });
 
-router.post('/import', async (req, res) => {
+router.post('/import', protect, async (req, res) => {
   try {
     const rawInvoices = req.body;
     if (!Array.isArray(rawInvoices) || rawInvoices.length === 0) {
@@ -248,7 +249,7 @@ router.post('/import', async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', protect, async (req, res) => {
   try {
     const filter = {};
     const page = parseInt(req.query.page) || 1;
@@ -316,7 +317,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/last/:companyId', async (req, res) => {
+router.get('/last/:companyId', protect, async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);
 
@@ -337,7 +338,7 @@ router.get('/last/:companyId', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', protect, async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id)
       .populate('party')
@@ -354,7 +355,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', protect, async (req, res) => {
   try {
     const existing = await Invoice.findById(req.params.id);
     if (!existing) {
@@ -393,7 +394,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', protect, async (req, res) => {
   try {
     const invoice = await Invoice.findByIdAndDelete(req.params.id);
 
@@ -413,7 +414,7 @@ router.post('/:id/payment', [
   body('amount').isNumeric().withMessage('Amount must be a number'),
   body('paymentMethod').isIn(['Cash', 'Bank Transfer', 'Cheque', 'UPI', 'Card', 'Others'])
     .withMessage('Invalid payment method'),
-], validate, async (req, res) => {
+], protect, validate, async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
     if (!invoice) {
