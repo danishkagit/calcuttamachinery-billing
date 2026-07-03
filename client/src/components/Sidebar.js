@@ -97,7 +97,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     <>
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
+        <div className="sidebar-header d-lg-none">
           <div className="sidebar-brand">
             <div className="sidebar-brand-logo" style={{
               background: 'rgba(255, 255, 255, 0.95)',
@@ -111,7 +111,7 @@ const Sidebar = ({ isOpen, onClose }) => {
               <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', letterSpacing: '1.5px', fontWeight: 700, textTransform: 'uppercase', marginTop: '4px' }}>GST BILLING</span>
             </div>
           </div>
-          <button className="btn btn-link text-white d-lg-none p-0" onClick={onClose}>
+          <button className="btn btn-link text-white p-0" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
