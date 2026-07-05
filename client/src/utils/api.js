@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Vercel deployment will define REACT_APP_API_URL pointing to the Render backend URL
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Frontend and backend are integrated, use relative path for API
+const API_BASE = '/api';
 
 const api = axios.create({
   baseURL: API_BASE,

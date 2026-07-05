@@ -39,12 +39,20 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/gstin', gstinRoutes);
 app.use('/api/gst', gstReturnsRoutes);
 
-// Removed static file serving logic for separate frontend/backend deployment
-// Frontend is deployed to Vercel, Backend to Render
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
 
-app.use((req, res, next) => {
-  res.status(404).json({ success: false, error: `Route ${req.originalUrl} not found` });
-});
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client', 'build', 'index.html'));
+  });
+} else {
+  app.use((req, res, next) => {
+    res.status(404).json({ success: false, error: `Route ${req.originalUrl} not found` });
+  });
+}
+
+
 
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);

@@ -1,0 +1,20 @@
+{
+  "name": "calcuttamachinery-billing",
+  "version": "1.0.0",
+  "description": "Integrated MERN Stack Application",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "npm run start --prefix server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm install --prefix client && npm run build --prefix client && npm install --prefix server",
+    "postinstall": "npm run build"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
