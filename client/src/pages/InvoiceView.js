@@ -92,6 +92,10 @@ const InvoiceView = () => {
             <button className={`btn btn-sm ${template === 'classic' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('classic')}>Classic</button>
             <button className={`btn btn-sm ${template === 'modern' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('modern')}>Modern</button>
             <button className={`btn btn-sm ${template === 'minimal' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('minimal')}>Minimal</button>
+            <button className={`btn btn-sm ${template === 'professional' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('professional')}>Pro</button>
+            <button className={`btn btn-sm ${template === 'elegant' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('elegant')}>Elegant</button>
+            <button className={`btn btn-sm ${template === 'corporate' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('corporate')}>Corporate</button>
+            <button className={`btn btn-sm ${template === 'retail' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('retail')}>Retail</button>
             <button className={`btn btn-sm ${template === 'tally' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('tally')}>Tally ERP</button>
           </div>
           <button className="btn btn-primary" onClick={handlePrint}><i className="fas fa-print me-1"></i>Print</button>
@@ -181,7 +185,7 @@ const InvoiceView = () => {
       )}
 
       <div className="invoice-print-area" ref={printRef}>
-        <InvoiceTemplate invoice={invoice} company={company} party={party} template={template} />
+        <InvoiceTemplate invoice={invoice} company={company} party={party} template={template} templateSettings={company?.templateSettings || {}} />
       </div>
 
       {payments.length > 0 && (

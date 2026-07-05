@@ -77,6 +77,10 @@ const companySchema = new mongoose.Schema({
     trim: true,
     default: 'classic'
   },
+  templateSettings: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
   lastInvoiceNo: {
     type: Number,
     default: 0
