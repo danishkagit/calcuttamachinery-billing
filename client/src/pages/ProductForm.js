@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { UNITS, TAX_RATES } from '../utils/helpers';
-import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
 
 const ProductForm = () => {
@@ -39,7 +38,7 @@ const ProductForm = () => {
         gstType: p.gstType || 'gst'
       });
     } catch (err) {
-      toast.error('Failed to load product');
+      window.alert('Failed to load product');
       navigate('/products');
     } finally {
       setLoading(false);
@@ -54,25 +53,25 @@ const ProductForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.hsnCode) {
-      toast.error('Name and HSN code are required');
+      window.alert('Name and HSN code are required');
       return;
     }
     if (!form.sellingPrice || form.sellingPrice <= 0) {
-      toast.error('Selling price must be greater than 0');
+      window.alert('Selling price must be greater than 0');
       return;
     }
     setSaving(true);
     try {
       if (isEdit) {
         await api.put(`/products/${id}`, form);
-        toast.success('Product updated successfully');
+        window.alert('Product updated successfully');
       } else {
         await api.post('/products', form);
-        toast.success('Product created successfully');
+        window.alert('Product created successfully');
       }
       navigate('/products');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Save failed');
+      window.alert(err.response?.data?.message || 'Save failed');
     } finally {
       setSaving(false);
     }

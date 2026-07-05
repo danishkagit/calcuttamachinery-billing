@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../utils/api';
 import { useCompany } from '../context/CompanyContext';
 import { formatCurrency, amountInWords, getStateCode, INDIAN_STATES, TAX_RATES, INVOICE_TYPES, UNITS } from '../utils/helpers';
-import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
 
 const emptyItem = { product: '', description: '', hsnCode: '', quantity: 1, unit: 'Nos', rate: 0, taxableValue: 0, taxRate: 18, cgst: 0, sgst: 0, igst: 0, cess: 0, total: 0 };
@@ -176,7 +175,7 @@ const InvoiceCreate = () => {
 
   const removeItem = (index) => {
     if (form.items.length === 1) {
-      toast.warning('At least one item is required');
+      window.alert('At least one item is required');
       return;
     }
     setForm(prev => {
@@ -205,15 +204,15 @@ const InvoiceCreate = () => {
 
   const handleSubmit = async (saveAndPrint = false) => {
     if (!selectedParty) {
-      toast.error('Please select a party');
+      window.alert('Please select a party');
       return;
     }
     if (form.items.length === 0 || form.items.every(i => !i.quantity || !i.rate)) {
-      toast.error('Add at least one item with quantity and rate');
+      window.alert('Add at least one item with quantity and rate');
       return;
     }
     if (form.invoiceDate && form.dueDate && new Date(form.dueDate) < new Date(form.invoiceDate)) {
-      toast.error('Due date must be after invoice date');
+      window.alert('Due date must be after invoice date');
       return;
     }
 
@@ -250,13 +249,13 @@ const InvoiceCreate = () => {
     try {
       const res = await api.post('/invoices', payload);
       const createdInvoice = res.data.data;
-      toast.success('Invoice created successfully');
+      window.alert('Invoice created successfully');
       if (saveAndPrint) {
         window.open(`/invoices/${createdInvoice._id}`, '_blank');
       }
       navigate(`/invoices/${createdInvoice._id}`);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create invoice');
+      window.alert(err.response?.data?.message || 'Failed to create invoice');
     } finally {
       setSaving(false);
     }
@@ -267,9 +266,9 @@ const InvoiceCreate = () => {
       const res = await api.post('/parties', partyData);
       selectParty(res.data.data);
       setShowNewPartyModal(false);
-      toast.success('Party created and selected');
+      window.alert('Party created and selected');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create party');
+      window.alert(err.response?.data?.message || 'Failed to create party');
     }
   };
 

@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import { formatCurrency, formatDate, PAYMENT_METHODS } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
-
 const PaymentList = () => {
   const [payments, setPayments] = useState([]);
   const [parties, setParties] = useState([]);
@@ -25,7 +23,7 @@ const PaymentList = () => {
       setPayments(res.data.data || []);
       setTotalPages(Math.ceil((res.data.count || 0) / limit) || 1);
     } catch (err) {
-      toast.error('Failed to load payments');
+      window.alert('Failed to load payments');
     } finally {
       setLoading(false);
     }
@@ -59,17 +57,17 @@ const PaymentList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.invoice || !form.amount || form.amount <= 0) {
-      toast.error('Select invoice and enter valid amount');
+      window.alert('Select invoice and enter valid amount');
       return;
     }
     setSaving(true);
     try {
       await api.post('/payments', form);
-      toast.success('Payment recorded');
+      window.alert('Payment recorded');
       setShowModal(false);
       fetchPayments();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to record payment');
+      window.alert(err.response?.data?.message || 'Failed to record payment');
     } finally {
       setSaving(false);
     }
@@ -79,10 +77,10 @@ const PaymentList = () => {
     if (!window.confirm('Delete this payment record?')) return;
     try {
       await api.delete(`/payments/${id}`);
-      toast.success('Payment deleted');
+      window.alert('Payment deleted');
       fetchPayments();
     } catch (err) {
-      toast.error('Delete failed');
+      window.alert('Delete failed');
     }
   };
 

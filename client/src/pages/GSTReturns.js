@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
-
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const GSTReturns = () => {
@@ -28,7 +26,7 @@ const GSTReturns = () => {
       const res = await api.get(`/gst/gstr1/${year}/${month + 1}`);
       setGstr1Data(res.data.data);
     } catch (err) {
-      toast.error('Failed to generate GSTR-1 data');
+      window.alert('Failed to generate GSTR-1 data');
     } finally {
       setLoading(false);
     }
@@ -40,7 +38,7 @@ const GSTReturns = () => {
       const res = await api.get(`/gst/gstr3b/${year}/${month + 1}`);
       setGstr3bData(res.data.data);
     } catch (err) {
-      toast.error('Failed to generate GSTR-3B data');
+      window.alert('Failed to generate GSTR-3B data');
     } finally {
       setLoading(false);
     }
@@ -60,18 +58,18 @@ const GSTReturns = () => {
   }, [activeTab, fetchGstr1, fetchGstr3b, fetchHistory]);
 
   const handleRequestOtp = async () => {
-    if (!auth.username || !auth.gstin) { toast.error('Enter username and GSTIN'); return; }
+    if (!auth.username || !auth.gstin) { window.alert('Enter username and GSTIN'); return; }
     try {
       await api.post('/gst/auth/request-otp', { username: auth.username, gstin: auth.gstin });
-      toast.success('OTP sent to registered mobile/email');
+      window.alert('OTP sent to registered mobile/email');
       setAuth(prev => ({ ...prev, step: 'otp' }));
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to request OTP');
+      window.alert(err.response?.data?.error || 'Failed to request OTP');
     }
   };
 
   const handleAuthenticate = async () => {
-    if (!auth.otp) { toast.error('Enter OTP'); return; }
+    if (!auth.otp) { window.alert('Enter OTP'); return; }
     try {
       const res = await api.post('/gst/auth/authenticate', {
         username: auth.username,
@@ -80,18 +78,18 @@ const GSTReturns = () => {
       });
       const token = res.data.data?.token || res.data.data?.auth_token || '';
       setAuth(prev => ({ ...prev, token, step: 'authenticated' }));
-      toast.success('GST portal authenticated');
+      window.alert('GST portal authenticated');
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Authentication failed');
+      window.alert(err.response?.data?.error || 'Authentication failed');
     }
   };
 
   const handleFileReturn = async (type) => {
-    if (!auth.token) { toast.error('Authenticate with GST portal first'); return; }
+    if (!auth.token) { window.alert('Authenticate with GST portal first'); return; }
     setFilingAction(type);
     try {
       const data = type === 'gstr1' ? gstr1Data : gstr3bData;
-      if (!data) { toast.error('Generate return data first'); return; }
+      if (!data) { window.alert('Generate return data first'); return; }
       const endpoint = type === 'gstr1' ? '/gst/gstr1/file' : '/gst/gstr3b/file';
       await api.post(endpoint, {
         token: auth.token,
@@ -100,7 +98,7 @@ const GSTReturns = () => {
         returnData: data,
         action: 'file'
       });
-      toast.success(`${type.toUpperCase()} filed successfully`);
+      window.alert(`${type.toUpperCase()} filed successfully`);
       await api.post('/gst/filing-history', {
         returnType: type.toUpperCase(),
         period: `${months[month]} ${year}`,
@@ -110,7 +108,7 @@ const GSTReturns = () => {
       });
       fetchHistory();
     } catch (err) {
-      toast.error(err.response?.data?.error || `${type.toUpperCase()} filing failed`);
+      window.alert(err.response?.data?.error || `${type.toUpperCase()} filing failed`);
     } finally {
       setFilingAction('');
     }
@@ -118,7 +116,7 @@ const GSTReturns = () => {
 
   const handleExport = () => {
     const data = activeTab === 'gstr1' ? gstr1Data : gstr3bData;
-    if (!data) { toast.error('No data to export'); return; }
+    if (!data) { window.alert('No data to export'); return; }
     const content = exportFormat === 'json' ? JSON.stringify(data, null, 2) : csvExport(data);
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -127,7 +125,7 @@ const GSTReturns = () => {
     a.download = `GST${activeTab.toUpperCase()}_${months[month]}_${year}.${exportFormat}`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success(`Exported as ${exportFormat.toUpperCase()}`);
+    window.alert(`Exported as ${exportFormat.toUpperCase()}`);
   };
 
   const csvExport = (data) => {
@@ -145,7 +143,7 @@ const GSTReturns = () => {
 
   const handleSaveFilingRecord = async (status) => {
     const data = activeTab === 'gstr1' ? gstr1Data : gstr3bData;
-    if (!data) { toast.error('Generate data first'); return; }
+    if (!data) { window.alert('Generate data first'); return; }
     await api.post('/gst/filing-history', {
       returnType: activeTab.toUpperCase(),
       period: `${months[month]} ${year}`,
@@ -153,7 +151,7 @@ const GSTReturns = () => {
       gstin: auth.gstin || 'manual',
       status
     });
-    toast.success('Filing record saved');
+    window.alert('Filing record saved');
     fetchHistory();
   };
 

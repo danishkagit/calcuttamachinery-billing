@@ -4,8 +4,6 @@ import api from '../utils/api';
 import InvoiceTemplate from '../components/InvoiceTemplate';
 import { formatCurrency, formatDate, PAYMENT_METHODS } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
-
 const InvoiceView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -40,7 +38,7 @@ const InvoiceView = () => {
         setTemplate(comp.defaultTemplate);
       }
     } catch (err) {
-      toast.error('Failed to load invoice');
+      window.alert('Failed to load invoice');
       navigate('/invoices');
     } finally {
       setLoading(false);
@@ -53,7 +51,7 @@ const InvoiceView = () => {
 
   const handleRecordPayment = async () => {
     if (!paymentForm.amount || paymentForm.amount <= 0) {
-      toast.error('Enter a valid amount');
+      window.alert('Enter a valid amount');
       return;
     }
     setRecording(true);
@@ -67,12 +65,12 @@ const InvoiceView = () => {
         reference: paymentForm.reference,
         notes: paymentForm.notes
       });
-      toast.success('Payment recorded');
+      window.alert('Payment recorded');
       setShowPaymentModal(false);
       setPaymentForm({ amount: 0, paymentDate: new Date().toISOString().split('T')[0], paymentMethod: 'Cash', reference: '', notes: '' });
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to record payment');
+      window.alert(err.response?.data?.message || 'Failed to record payment');
     } finally {
       setRecording(false);
     }

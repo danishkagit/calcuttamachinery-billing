@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCompany } from '../context/CompanyContext';
 import { INDIAN_STATES, getStateCode } from '../utils/helpers';
-import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
 
 const CompanySetup = () => {
@@ -59,20 +58,20 @@ const CompanySetup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.businessName) {
-      toast.error('Business name is required');
+      window.alert('Business name is required');
       return;
     }
     setSaving(true);
     try {
       if (company) {
         await updateCompany(form);
-        toast.success('Company updated successfully');
+        window.alert('Company updated successfully');
       } else {
         await createCompany(form);
-        toast.success('Company created successfully');
+        window.alert('Company created successfully');
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to save company');
+      window.alert(err.response?.data?.message || 'Failed to save company');
     } finally {
       setSaving(false);
     }

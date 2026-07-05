@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useCompany } from '../context/CompanyContext';
 import { formatCurrency, amountInWords, getStateCode, INDIAN_STATES, TAX_RATES, INVOICE_TYPES, UNITS } from '../utils/helpers';
-import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
 
 const emptyItem = { product: '', description: '', hsnCode: '', quantity: 1, unit: 'Nos', rate: 0, taxableValue: 0, taxRate: 18, cgst: 0, sgst: 0, igst: 0, cess: 0, total: 0 };
@@ -95,7 +94,7 @@ const InvoiceEdit = () => {
         amountInWords: inv.amountInWords || ''
       });
     } catch (err) {
-      toast.error('Failed to load invoice');
+      window.alert('Failed to load invoice');
       navigate('/invoices');
     } finally {
       setLoading(false);
@@ -187,7 +186,7 @@ const InvoiceEdit = () => {
   const addItem = () => setForm(prev => ({ ...prev, items: [...prev.items, { ...emptyItem }] }));
 
   const removeItem = (index) => {
-    if (form.items.length === 1) { toast.warning('At least one item required'); return; }
+    if (form.items.length === 1) { window.alert('At least one item required'); return; }
     setForm(prev => {
       const newItems = prev.items.filter((_, i) => i !== index);
       const totals = updateTotals(newItems);
@@ -208,8 +207,8 @@ const InvoiceEdit = () => {
   };
 
   const handleSubmit = async (saveAndPrint = false) => {
-    if (!selectedParty) { toast.error('Select a party'); return; }
-    if (form.items.length === 0 || form.items.every(i => !i.quantity || !i.rate)) { toast.error('Add at least one item'); return; }
+    if (!selectedParty) { window.alert('Select a party'); return; }
+    if (form.items.length === 0 || form.items.every(i => !i.quantity || !i.rate)) { window.alert('Add at least one item'); return; }
 
     setSaving(true);
     const isInterState = selectedParty?.stateCode && companyStateCode && selectedParty.stateCode !== companyStateCode;
@@ -226,11 +225,11 @@ const InvoiceEdit = () => {
 
     try {
       await api.put(`/invoices/${id}`, payload);
-      toast.success('Invoice updated');
+      window.alert('Invoice updated');
       if (saveAndPrint) window.open(`/invoices/${id}`, '_blank');
       navigate(`/invoices/${id}`);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Update failed');
+      window.alert(err.response?.data?.message || 'Update failed');
     } finally { setSaving(false); }
   };
 

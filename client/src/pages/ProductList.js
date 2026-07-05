@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
 import Papa from 'papaparse';
 
 const ProductList = () => {
@@ -25,7 +24,7 @@ const ProductList = () => {
       setProducts(res.data.data || []);
       setTotalPages(Math.ceil((res.data.count || 0) / limit) || 1);
     } catch (err) {
-      toast.error('Failed to load products');
+      window.alert('Failed to load products');
     } finally {
       setLoading(false);
     }
@@ -38,18 +37,18 @@ const ProductList = () => {
     setDeleting(true);
     try {
       await api.delete(`/products/${deleteId}`);
-      toast.success('Product deleted');
+      window.alert('Product deleted');
       setDeleteId(null);
       fetchProducts();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Delete failed');
+      window.alert(err.response?.data?.message || 'Delete failed');
     } finally {
       setDeleting(false);
     }
   };
 
   const handleExport = () => {
-    if (products.length === 0) return toast.info("No products to export");
+    if (products.length === 0) return window.alert("No products to export");
     const csv = Papa.unparse(products.map(p => ({
       name: p.name,
       description: p.description || '',
@@ -79,10 +78,10 @@ const ProductList = () => {
       complete: async (results) => {
         try {
           const res = await api.post('/products/import', results.data);
-          toast.success(`Imported ${res.data.count} products successfully`);
+          window.alert(`Imported ${res.data.count} products successfully`);
           fetchProducts();
         } catch (err) {
-          toast.error(err.response?.data?.error || 'Import failed');
+          window.alert(err.response?.data?.error || 'Import failed');
         }
       }
     });

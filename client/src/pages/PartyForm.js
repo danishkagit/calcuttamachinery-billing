@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { INDIAN_STATES, getStateCode } from '../utils/helpers';
-import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
 
 const PartyForm = () => {
@@ -47,7 +46,7 @@ const PartyForm = () => {
         stateCode: p.stateCode || 0
       });
     } catch (err) {
-      toast.error('Failed to load party');
+      window.alert('Failed to load party');
       navigate('/parties');
     } finally {
       setLoading(false);
@@ -66,7 +65,7 @@ const PartyForm = () => {
   const fetchGstinDetails = async () => {
     const gstin = form.gstin?.trim();
     if (!gstin || gstin.length !== 15) {
-      toast.error('Please enter a valid 15-digit GSTIN');
+      window.alert('Please enter a valid 15-digit GSTIN');
       return;
     }
     setFetchingGstin(true);
@@ -83,9 +82,9 @@ const PartyForm = () => {
         stateCode: data.stateCode || prev.stateCode,
         state: getStateName(data.stateCode) || prev.state,
       }));
-      toast.success('GSTIN details fetched successfully');
+      window.alert('GSTIN details fetched successfully');
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to fetch GSTIN details');
+      window.alert(err.response?.data?.error || 'Failed to fetch GSTIN details');
     } finally {
       setFetchingGstin(false);
     }
@@ -103,21 +102,21 @@ const PartyForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.mobile) {
-      toast.error('Name and mobile are required');
+      window.alert('Name and mobile are required');
       return;
     }
     setSaving(true);
     try {
       if (isEdit) {
         await api.put(`/parties/${id}`, form);
-        toast.success('Party updated successfully');
+        window.alert('Party updated successfully');
       } else {
         await api.post('/parties', form);
-        toast.success('Party created successfully');
+        window.alert('Party created successfully');
       }
       navigate('/parties');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to save party');
+      window.alert(err.response?.data?.message || 'Failed to save party');
     } finally {
       setSaving(false);
     }

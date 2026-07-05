@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
 
 const LoginPage = () => {
@@ -27,12 +26,12 @@ const LoginPage = () => {
     setLoading(true);
     try {
       await login(email, password);
-      toast.success('Login successful!');
+      window.alert('Login successful!');
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.error || 'Login failed. Please check your credentials.';
       setError(msg);
-      toast.error(msg);
+      window.alert(msg);
     } finally {
       setLoading(false);
     }
@@ -42,12 +41,12 @@ const LoginPage = () => {
     setLoading(true);
     try {
       await googleLogin(credentialResponse.credential);
-      toast.success('Google Login successful!');
+      window.alert('Google Login successful!');
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.error || 'Google Login failed.';
       setError(msg);
-      toast.error(msg);
+      window.alert(msg);
     } finally {
       setLoading(false);
     }
@@ -172,7 +171,7 @@ const LoginPage = () => {
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={() => {
-                  toast.error('Google Login Failed');
+                  window.alert('Google Login Failed');
                 }}
                 theme="filled_black"
                 shape="rectangular"

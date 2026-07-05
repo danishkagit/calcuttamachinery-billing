@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
-
 const OutstandingReport = () => {
   const [parties, setParties] = useState([]);
   const [invoices, setInvoices] = useState([]);
@@ -24,7 +22,7 @@ const OutstandingReport = () => {
       const pRes = await api.get('/parties', { params: { limit: 500 } });
       setParties(pRes.data.data || []);
     } catch (err) {
-      toast.error('Failed to load outstanding data');
+      window.alert('Failed to load outstanding data');
     } finally {
       setLoading(false);
     }

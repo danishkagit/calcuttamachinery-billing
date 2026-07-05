@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
 import Papa from 'papaparse';
 
 const InvoiceList = () => {
@@ -32,7 +31,7 @@ const InvoiceList = () => {
       const total = (d.data || []).reduce((s, inv) => s + (inv.grandTotal || 0), 0);
       setTotalAmount(total);
     } catch (err) {
-      toast.error('Failed to load invoices');
+      window.alert('Failed to load invoices');
     } finally {
       setLoading(false);
     }
@@ -45,11 +44,11 @@ const InvoiceList = () => {
     setDeleting(true);
     try {
       await api.delete(`/invoices/${deleteId}`);
-      toast.success('Invoice deleted');
+      window.alert('Invoice deleted');
       setDeleteId(null);
       fetchInvoices();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Delete failed');
+      window.alert(err.response?.data?.message || 'Delete failed');
     } finally {
       setDeleting(false);
     }
@@ -60,7 +59,7 @@ const InvoiceList = () => {
       const res = await api.get('/invoices', { params: { limit: 10000, paymentStatus: statusFilter, startDate: fromDate, endDate: toDate, search } });
       const exportData = [];
       const invs = res.data.data || [];
-      if (invs.length === 0) return toast.info("No invoices to export");
+      if (invs.length === 0) return window.alert("No invoices to export");
       
       invs.forEach(inv => {
         if (!inv.items || inv.items.length === 0) {
@@ -114,7 +113,7 @@ const InvoiceList = () => {
       a.download = 'sales_invoices.csv';
       a.click();
     } catch (err) {
-      toast.error('Failed to export invoices');
+      window.alert('Failed to export invoices');
     }
   };
 
@@ -159,14 +158,14 @@ const InvoiceList = () => {
           });
 
           const res = await api.post('/invoices/import', Object.values(grouped));
-          toast.success(`Imported ${res.data.count} invoices successfully`);
+          window.alert(`Imported ${res.data.count} invoices successfully`);
           if (res.data.errors) {
             console.warn("Import errors:", res.data.errors);
-            toast.warning(`Imported with some errors. Check console.`);
+            window.alert(`Imported with some errors. Check console.`);
           }
           fetchInvoices();
         } catch (err) {
-          toast.error(err.response?.data?.error || 'Import failed');
+          window.alert(err.response?.data?.error || 'Import failed');
         }
       }
     });

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
 import Papa from 'papaparse';
 
 const PartyList = () => {
@@ -26,7 +25,7 @@ const PartyList = () => {
       setParties(res.data.data || []);
       setTotalPages(Math.ceil((res.data.count || 0) / limit) || 1);
     } catch (err) {
-      toast.error('Failed to load parties');
+      window.alert('Failed to load parties');
     } finally {
       setLoading(false);
     }
@@ -39,18 +38,18 @@ const PartyList = () => {
     setDeleting(true);
     try {
       await api.delete(`/parties/${deleteId}`);
-      toast.success('Party deleted successfully');
+      window.alert('Party deleted successfully');
       setDeleteId(null);
       fetchParties();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Delete failed');
+      window.alert(err.response?.data?.message || 'Delete failed');
     } finally {
       setDeleting(false);
     }
   };
 
   const handleExport = () => {
-    if (parties.length === 0) return toast.info("No parties to export");
+    if (parties.length === 0) return window.alert("No parties to export");
     const csv = Papa.unparse(parties.map(p => ({
       name: p.name,
       partyType: p.partyType,
@@ -80,10 +79,10 @@ const PartyList = () => {
       complete: async (results) => {
         try {
           const res = await api.post('/parties/import', results.data);
-          toast.success(`Imported ${res.data.count} parties successfully`);
+          window.alert(`Imported ${res.data.count} parties successfully`);
           fetchParties();
         } catch (err) {
-          toast.error(err.response?.data?.error || 'Import failed');
+          window.alert(err.response?.data?.error || 'Import failed');
         }
       }
     });

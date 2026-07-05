@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
 import Papa from 'papaparse';
 
 const PurchaseReport = () => {
@@ -32,7 +31,7 @@ const PurchaseReport = () => {
       const res = await api.get('/reports/purchases', { params });
       setData(res.data.data);
     } catch (err) {
-      toast.error('Failed to load purchase report');
+      window.alert('Failed to load purchase report');
     } finally {
       setLoading(false);
     }
@@ -44,7 +43,7 @@ const PurchaseReport = () => {
 
   const handleExport = async () => {
     try {
-      if (invoices.length === 0) return toast.info("No purchases to export");
+      if (invoices.length === 0) return window.alert("No purchases to export");
       
       const exportData = [];
       invoices.forEach(inv => {
@@ -99,7 +98,7 @@ const PurchaseReport = () => {
       a.download = 'purchase_invoices.csv';
       a.click();
     } catch (err) {
-      toast.error('Failed to export purchases');
+      window.alert('Failed to export purchases');
     }
   };
 
@@ -144,14 +143,14 @@ const PurchaseReport = () => {
           });
 
           const res = await api.post('/invoices/import', Object.values(grouped));
-          toast.success(`Imported ${res.data.count} purchases successfully`);
+          window.alert(`Imported ${res.data.count} purchases successfully`);
           if (res.data.errors) {
             console.warn("Import errors:", res.data.errors);
-            toast.warning(`Imported with some errors. Check console.`);
+            window.alert(`Imported with some errors. Check console.`);
           }
           fetchReport();
         } catch (err) {
-          toast.error(err.response?.data?.error || 'Import failed');
+          window.alert(err.response?.data?.error || 'Import failed');
         }
       }
     });

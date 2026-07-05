@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import api from '../utils/api';
 import InvoiceTemplate from '../components/InvoiceTemplate';
 import Loading from '../components/Loading';
@@ -75,7 +74,7 @@ const TemplateSettings = () => {
       const res = await api.get('/company');
       setCompany(res.data.data);
     } catch (err) {
-      toast.error('Failed to load company settings');
+      window.alert('Failed to load company settings');
     } finally {
       setLoading(false);
     }
@@ -87,9 +86,9 @@ const TemplateSettings = () => {
     try {
       const res = await api.put(`/company/${company._id}`, { defaultTemplate: templateId });
       setCompany(res.data.data);
-      toast.success('Default template updated successfully!');
+      window.alert('Default template updated successfully!');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update default template');
+      window.alert(err.response?.data?.message || 'Failed to update default template');
     } finally {
       setSaving(null);
     }
@@ -128,10 +127,10 @@ const TemplateSettings = () => {
       };
       const res = await api.put(`/company/${company._id}`, { templateSettings: currentSettings });
       setCompany(res.data.data);
-      toast.success('Template customization saved!');
+      window.alert('Template customization saved!');
       setCustomizing(null);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to save customization');
+      window.alert(err.response?.data?.message || 'Failed to save customization');
     } finally {
       setSavingCustom(false);
     }

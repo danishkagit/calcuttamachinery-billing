@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
-
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const GSTR1Report = () => {
@@ -48,7 +46,7 @@ const GSTR1Report = () => {
       const totalTax = invs.reduce((s, inv) => s + (inv.cgstTotal || 0) + (inv.sgstTotal || 0) + (inv.igstTotal || 0), 0);
       setSummary({ totalInvoices: invs.length, totalTaxable, totalTax });
     } catch (err) {
-      toast.error('Failed to load GSTR-1 data');
+      window.alert('Failed to load GSTR-1 data');
     } finally {
       setLoading(false);
     }
@@ -64,9 +62,9 @@ const GSTR1Report = () => {
       a.href = dataStr;
       a.download = `GSTR1_${months[month]}_${year}.json`;
       a.click();
-      toast.success("GST JSON Downloaded Successfully");
+      window.alert("GST JSON Downloaded Successfully");
     } catch (err) {
-      toast.error('Failed to download GSTR-1 JSON');
+      window.alert('Failed to download GSTR-1 JSON');
     }
   };
 

@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import Loading from '../components/Loading';
-import { toast } from 'react-toastify';
-
 const SalesReport = () => {
   const today = new Date().toISOString().split('T')[0];
   const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
@@ -37,7 +35,7 @@ const SalesReport = () => {
       });
       setSummary(s);
     } catch (err) {
-      toast.error('Failed to load report');
+      window.alert('Failed to load report');
     } finally {
       setLoading(false);
     }

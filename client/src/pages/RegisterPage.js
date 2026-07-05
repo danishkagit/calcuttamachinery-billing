@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
 
 const RegisterPage = () => {
@@ -36,12 +35,12 @@ const RegisterPage = () => {
     setLoading(true);
     try {
       await register(name, email, password, phone);
-      toast.success('Account created successfully!');
+      window.alert('Account created successfully!');
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.error || 'Registration failed';
       setError(msg);
-      toast.error(msg);
+      window.alert(msg);
     } finally {
       setLoading(false);
     }
@@ -51,12 +50,12 @@ const RegisterPage = () => {
     setLoading(true);
     try {
       await googleLogin(credentialResponse.credential);
-      toast.success('Google authentication successful!');
+      window.alert('Google authentication successful!');
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.error || 'Google authentication failed.';
       setError(msg);
-      toast.error(msg);
+      window.alert(msg);
     } finally {
       setLoading(false);
     }
@@ -160,7 +159,7 @@ const RegisterPage = () => {
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={() => {
-                  toast.error('Google Sign Up Failed');
+                  window.alert('Google Sign Up Failed');
                 }}
                 text="signup_with"
                 theme="filled_black"
