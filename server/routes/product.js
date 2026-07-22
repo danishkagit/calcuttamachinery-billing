@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Product = require('../models/Product');
 const { protect } = require('../middleware/auth');
+const checkPermission = require('../middleware/checkPermission');
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -12,7 +13,7 @@ const validate = (req, res, next) => {
   next();
 };
 
-router.post('/', protect, [
+router.post('/', protect, checkPermission('canManageProducts'), [
   body('name').notEmpty().withMessage('Product name is required'),
   body('sellingPrice').isNumeric().withMessage('Selling price must be a number'),
 ], validate, async (req, res) => {

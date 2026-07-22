@@ -1,9 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const { body, validationResult } = require('express-validator');
 const Invoice = require('../models/Invoice');
 const Party = require('../models/Party');
+const FilingHistory = require('../models/FilingHistory');
 const { protect } = require('../middleware/auth');
+
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, error: errors.array()[0].msg });
+  }
+  next();
+};
 
 const GST_API_BASE = 'https://services.gst.gov.in/services/api';
 
@@ -369,21 +379,110 @@ router.post('/gstr3b/file', protect, async (req, res) => {
   }
 });
 
-// In-memory filing history (replace with DB model for persistence)
-let filingHistory = [];
+// ---------------------------------------------------------------------------
+// GST Filing History — persisted to MongoDB
+// ---------------------------------------------------------------------------
 
-router.get('/filing-history', protect, (req, res) => {
-  res.json({ success: true, data: filingHistory.sort((a, b) => new Date(b.filedAt) - new Date(a.filedAt)) });
+/**
+ * GET /api/gst/filing-history
+ *
+ * Returns filing history records for the authenticated user.
+ * Query params:
+ *   returnType {string}  – GSTR-1 | GSTR-3B
+ *   status     {string}  – filed | saved | submitted
+ *   page       {number}  – default 1
+ *   limit      {number}  – default 20, max 100
+ */
+router.get('/filing-history', protect, async (req, res) => {
+  try {
+    const page  = Math.max(1, parseInt(req.query.page)  || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+    const skip  = (page - 1) * limit;
+
+    const filter = { userId: req.user._id };
+
+    if (req.query.returnType && ['GSTR-1', 'GSTR-3B'].includes(req.query.returnType)) {
+      filter.returnType = req.query.returnType;
+    }
+
+    if (req.query.status && ['filed', 'saved', 'submitted'].includes(req.query.status)) {
+      filter.status = req.query.status;
+    }
+
+    const [records, total] = await Promise.all([
+      FilingHistory.find(filter)
+        .sort({ filedAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('companyId', 'businessName gstin')
+        .lean(),
+      FilingHistory.countDocuments(filter)
+    ]);
+
+    res.json({
+      success: true,
+      data: records,
+      count: records.length,
+      total,
+      page,
+      pages: Math.ceil(total / limit)
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
-router.post('/filing-history', protect, (req, res) => {
-  const record = {
-    _id: Date.now().toString(),
-    ...req.body,
-    filedAt: new Date().toISOString()
-  };
-  filingHistory.push(record);
-  res.json({ success: true, data: record });
-});
+/**
+ * POST /api/gst/filing-history
+ *
+ * Body:
+ *   returnType      {string, required} – GSTR-1 | GSTR-3B
+ *   period          {string, required} – YYYY-MM, e.g. "2024-03"
+ *   status          {string}           – filed | saved | submitted (default: filed)
+ *   acknowledgmentNo {string}          – portal acknowledgment number
+ *   companyId       {string}           – Company ObjectId
+ */
+router.post(
+  '/filing-history',
+  protect,
+  [
+    body('returnType')
+      .isIn(['GSTR-1', 'GSTR-3B'])
+      .withMessage('returnType must be GSTR-1 or GSTR-3B'),
+    body('period')
+      .matches(/^\d{4}-(0[1-9]|1[0-2])$/)
+      .withMessage('period must be in YYYY-MM format (e.g. 2024-03)'),
+    body('status')
+      .optional()
+      .isIn(['filed', 'saved', 'submitted'])
+      .withMessage('status must be filed, saved, or submitted'),
+    body('acknowledgmentNo').optional().isString().trim(),
+    body('companyId').optional().isString().trim()
+  ],
+  validate,
+  async (req, res) => {
+    try {
+      const { returnType, period, status, acknowledgmentNo, companyId } = req.body;
+
+      const record = await FilingHistory.create({
+        userId:          req.user._id,
+        returnType,
+        period,
+        status:          status || 'filed',
+        filedAt:         new Date(),
+        acknowledgmentNo: acknowledgmentNo || '',
+        companyId:       companyId || null
+      });
+
+      const populated = await FilingHistory.findById(record._id)
+        .populate('companyId', 'businessName gstin')
+        .lean();
+
+      res.status(201).json({ success: true, data: populated });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+);
 
 module.exports = router;

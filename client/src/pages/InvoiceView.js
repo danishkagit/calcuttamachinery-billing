@@ -14,6 +14,7 @@ const InvoiceView = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [template, setTemplate] = useState('classic');
+  const [printFormat, setPrintFormat] = useState('a4');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentForm, setPaymentForm] = useState({ amount: 0, paymentDate: new Date().toISOString().split('T')[0], paymentMethod: 'Cash', reference: '', notes: '' });
   const [recording, setRecording] = useState(false);
@@ -77,7 +78,14 @@ const InvoiceView = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    document.body.classList.remove('a5-print', 'thermal-print');
+    if (printFormat !== 'a4') {
+      document.body.classList.add(`${printFormat}-print`);
+    }
+    setTimeout(() => {
+      window.print();
+      document.body.classList.remove('a5-print', 'thermal-print');
+    }, 100);
   };
 
   const handleRecordPayment = async () => {
@@ -124,6 +132,11 @@ const InvoiceView = () => {
             <button className={`btn btn-sm ${template === 'corporate' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('corporate')}>Corporate</button>
             <button className={`btn btn-sm ${template === 'retail' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('retail')}>Retail</button>
             <button className={`btn btn-sm ${template === 'tally' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setTemplate('tally')}>Tally ERP</button>
+          </div>
+          <div className="btn-group me-2">
+            <button className={`btn btn-sm ${printFormat === 'a4' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setPrintFormat('a4')}>A4</button>
+            <button className={`btn btn-sm ${printFormat === 'a5' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setPrintFormat('a5')}>A5</button>
+            <button className={`btn btn-sm ${printFormat === 'thermal' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setPrintFormat('thermal')}>80mm</button>
           </div>
           <button className="btn btn-primary" onClick={handlePrint}><i className="fas fa-print me-1"></i>Print</button>
           <button className="btn btn-success" onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent('Invoice ' + invoice.invoiceNo + ' from ' + (company?.businessName || ''))}`, '_blank')}><i className="fab fa-whatsapp me-1"></i>WhatsApp</button>

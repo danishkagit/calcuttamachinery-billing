@@ -2,6 +2,17 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const permissionsSchema = new mongoose.Schema({
+  canCreateInvoice:   { type: Boolean, default: false },
+  canEditInvoice:     { type: Boolean, default: false },
+  canDeleteInvoice:   { type: Boolean, default: false },
+  canViewReports:     { type: Boolean, default: false },
+  canManageParties:   { type: Boolean, default: false },
+  canManageProducts:  { type: Boolean, default: false },
+  canManageExpenses:  { type: Boolean, default: false },
+  canManageStaff:     { type: Boolean, default: false }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -36,6 +47,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
     maxlength: 15
+  },
+  // ── Staff / multi-user fields ──────────────────────────────────────
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company',
+    default: null
+  },
+  staffRole: {
+    type: String,
+    enum: ['owner', 'accountant', 'salesperson', 'viewer'],
+    default: null
+  },
+  permissions: {
+    type: permissionsSchema,
+    default: null
+  },
+  // true for self-registered users; false for staff added via invite
+  isOwner: {
+    type: Boolean,
+    default: true
   },
   createdAt: {
     type: Date,

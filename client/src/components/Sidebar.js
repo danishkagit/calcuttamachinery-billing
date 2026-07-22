@@ -18,12 +18,15 @@ const sections = [
     items: [
       { path: '/parties', icon: 'fas fa-users', label: 'Parties' },
       { path: '/products', icon: 'fas fa-box', label: 'Products' },
+      { path: '/inventory', icon: 'fas fa-boxes', label: 'Inventory' },
+      { path: '/barcodes', icon: 'fas fa-qrcode', label: 'Barcode Generator' },
     ],
   },
   {
     label: 'Documents',
     items: [
       { path: '/invoices', icon: 'fas fa-file-invoice', label: 'All Invoices' },
+      { path: '/purchase-register', icon: 'fas fa-shopping-cart', label: 'Purchase Register' },
       { path: '/payments', icon: 'fas fa-credit-card', label: 'Payments' },
       { path: '/expenses', icon: 'fas fa-money-bill-wave', label: 'Expenses' },
     ],
@@ -33,8 +36,10 @@ const sections = [
     items: [
       { path: '/reports/sales', icon: 'fas fa-chart-bar', label: 'Sales Report' },
       { path: '/reports/purchases', icon: 'fas fa-shopping-cart', label: 'Purchase Report' },
+      { path: '/profit-loss', icon: 'fas fa-chart-line', label: 'Profit & Loss' },
       { path: '/analytics', icon: 'fas fa-chart-pie', label: 'Analytics' },
       { path: '/reports/outstanding', icon: 'fas fa-clock', label: 'Outstanding' },
+      { path: '/tally-export', icon: 'fas fa-file-export', label: 'Tally Export' },
     ],
   },
   {
@@ -49,6 +54,8 @@ const sections = [
     label: 'Settings',
     items: [
       { path: '/settings', icon: 'fas fa-cog', label: 'All Settings' },
+      { path: '/staff', icon: 'fas fa-users-cog', label: 'Staff Accounts' },
+      { path: '/audit-trail', icon: 'fas fa-history', label: 'Audit Trail' },
     ],
   },
 ];

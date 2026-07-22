@@ -28,6 +28,13 @@ import ExpenseList from './pages/ExpenseList';
 import ExpenseForm from './pages/ExpenseForm';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import StaffManagement from './pages/StaffManagement';
+import AuditTrail from './pages/AuditTrail';
+import ProfitLossReport from './pages/ProfitLossReport';
+import PurchaseRegister from './pages/PurchaseRegister';
+import Inventory from './pages/Inventory';
+import BarcodeGenerator from './pages/BarcodeGenerator';
+import TallyExport from './pages/TallyExport';
 
 const ProtectedLayout = ({ children }) => (
   <ProtectedRoute>
@@ -67,6 +74,13 @@ function App() {
           <Route path="/expenses/add" element={<ProtectedLayout><ExpenseForm /></ProtectedLayout>} />
           <Route path="/expenses/edit/:id" element={<ProtectedLayout><ExpenseForm /></ProtectedLayout>} />
           <Route path="/analytics" element={<ProtectedLayout><Analytics /></ProtectedLayout>} />
+          <Route path="/staff" element={<ProtectedLayout><StaffManagement /></ProtectedLayout>} />
+          <Route path="/audit-trail" element={<ProtectedLayout><AuditTrail /></ProtectedLayout>} />
+          <Route path="/profit-loss" element={<ProtectedLayout><ProfitLossReport /></ProtectedLayout>} />
+          <Route path="/purchase-register" element={<ProtectedLayout><PurchaseRegister /></ProtectedLayout>} />
+          <Route path="/inventory" element={<ProtectedLayout><Inventory /></ProtectedLayout>} />
+          <Route path="/barcodes" element={<ProtectedLayout><BarcodeGenerator /></ProtectedLayout>} />
+          <Route path="/tally-export" element={<ProtectedLayout><TallyExport /></ProtectedLayout>} />
         </Routes>
         </CompanyProvider>
       </AuthProvider>
