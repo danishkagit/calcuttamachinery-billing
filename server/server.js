@@ -19,6 +19,7 @@ const inventoryRoutes = require('./routes/inventory');
 const auditRoutes = require('./routes/audit');
 const barcodeRoutes = require('./routes/barcode');
 const staffRoutes = require('./routes/staff');
+const labourRoutes = require('./routes/labour');
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/barcode', barcodeRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/labour', labourRoutes);
 
 // Serve frontend build in production (if present — separate deployment may not have it)
 if (process.env.NODE_ENV === 'production') {
