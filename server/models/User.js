@@ -55,7 +55,7 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 userSchema.methods.generateToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET || 'fallback_secret_key_please_change', {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET || 'calcutta_machinery_jwt_secret_2024', {
     expiresIn: process.env.JWT_EXPIRE || '30d'
   });
 };
