@@ -273,7 +273,7 @@ const AuditTrail = () => {
   useEffect(() => {
     setPage(1);
     fetchLogs(1);
-  }, [fetchLogs]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchLogs]);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
