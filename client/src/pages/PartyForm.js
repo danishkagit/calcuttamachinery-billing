@@ -74,25 +74,14 @@ const PartyForm = () => {
       const data = res.data.data;
       setForm(prev => ({
         ...prev,
-        name: data.legalName || prev.name,
-        companyName: data.tradeName || data.legalName || prev.companyName,
-        address: data.address?.address || prev.address,
-        city: data.address?.city || prev.city,
-        pincode: data.address?.pincode || prev.pincode,
         stateCode: data.stateCode || prev.stateCode,
-        state: getStateName(data.stateCode) || prev.state,
+        state: data.stateName || prev.state,
       }));
-      window.alert('GSTIN details fetched successfully');
     } catch (err) {
       window.alert(err.response?.data?.error || 'Failed to fetch GSTIN details');
     } finally {
       setFetchingGstin(false);
     }
-  };
-
-  const getStateName = (code) => {
-    const state = INDIAN_STATES.find(s => s.code === code);
-    return state ? state.name : '';
   };
 
   const copyBillingToShipping = () => {
