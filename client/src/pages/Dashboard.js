@@ -42,7 +42,7 @@ const Dashboard = () => {
       <div className="dashboard-welcome">
         <div className="d-flex justify-content-between align-items-start flex-wrap" style={{ gap: 16 }}>
           <div>
-            <h5 className="mb-1 d-flex align-items-center" style={{ gap: 12 }}>
+            <h5 className="mb-1 d-flex align-items-center" style={{ gap: 12, color: 'var(--text-main)' }}>
               <i className="fas fa-industry" style={{ color: 'var(--primary)' }}></i>
               Calcutta Machinery
             </h5>
@@ -82,7 +82,7 @@ const Dashboard = () => {
         <div className="col-lg-8">
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center py-2">
-              <h6 className="fw-semibold mb-0">Recent Invoices</h6>
+              <h6 className="fw-semibold mb-0" style={{ color: 'var(--text-main)' }}>Recent Invoices</h6>
               <Link to="/invoices" className="btn btn-sm btn-outline-primary">View All</Link>
             </div>
             <div className="card-body p-0">
@@ -128,7 +128,7 @@ const Dashboard = () => {
         <div className="col-lg-4">
           <div className="card">
             <div className="card-header py-2">
-              <h6 className="fw-semibold mb-0"><i className="fas fa-credit-card me-2" style={{ color: 'var(--primary)' }}></i>Today's Payments</h6>
+              <h6 className="fw-semibold mb-0" style={{ color: 'var(--text-main)' }}><i className="fas fa-credit-card me-2" style={{ color: 'var(--primary)' }}></i>Today's Payments</h6>
             </div>
             <div className="card-body">
               {todayPayments.length === 0 ? (

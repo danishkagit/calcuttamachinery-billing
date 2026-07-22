@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../utils/api';
+import { useCompany } from '../context/CompanyContext';
 import Loading from '../components/Loading';
 
 const CATEGORIES = ['Office Rent', 'Electricity', 'Salary', 'Transport', 'Raw Material', 'Packaging', 'Maintenance', 'Marketing', 'Insurance', 'Legal', 'Travel', 'Stationery', 'Telephone', 'Other'];
@@ -9,6 +10,7 @@ const PAYMENT_MODES = ['Cash', 'Bank Transfer', 'Cheque', 'UPI', 'Card', 'Others
 const ExpenseForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { company } = useCompany();
   const isEdit = Boolean(id);
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
@@ -45,10 +47,14 @@ const ExpenseForm = () => {
     if (!form.description || !form.amount) { window.alert('Description and amount are required'); return; }
     setSaving(true);
     try {
+      const payload = { ...form };
+      if (!isEdit && company?._id) {
+        payload.company = company._id;
+      }
       if (isEdit) {
-        await api.put(`/expenses/${id}`, form);
+        await api.put(`/expenses/${id}`, payload);
       } else {
-        await api.post('/expenses', form);
+        await api.post('/expenses', payload);
       }
       navigate('/expenses');
     } catch (err) {

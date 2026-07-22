@@ -68,14 +68,14 @@ const Sidebar = ({ isOpen, onClose }) => {
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header d-lg-none">
-          <div className="sidebar-brand">
+            <div className="sidebar-brand">
             <img src="/logo.png" alt="CM" className="sidebar-brand-logo" />
             <div>
-              <div className="fw-bold" style={{ fontSize: '0.9rem', color: '#fff' }}>Calcutta Machinery</div>
+              <div className="fw-bold" style={{ fontSize: '0.9rem', color: 'var(--text-main)' }}>Calcutta Machinery</div>
               <div style={{ fontSize: '0.6rem', color: 'var(--sidebar-text-muted)' }}>GST BILLING</div>
             </div>
           </div>
-          <button className="btn btn-link text-white p-0" onClick={onClose}>
+          <button className="btn btn-link p-0" style={{ color: 'var(--text-muted)' }} onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -99,16 +99,16 @@ const Sidebar = ({ isOpen, onClose }) => {
         </ul>
         <div className="sidebar-footer">
           {user && (
-            <div className="mb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 8, marginBottom: 8 }}>
+            <div className="mb-2" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: 8, marginBottom: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <div style={{ width: 24, height: 24, borderRadius: 6, background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: '0.65rem' }}>
                   {user.name?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
-                <span style={{ color: '#fff', fontWeight: 600, fontSize: '0.78rem' }}>{user.name}</span>
+                <span style={{ color: 'var(--text-main)', fontWeight: 600, fontSize: '0.78rem' }}>{user.name}</span>
               </div>
               <button
                 onClick={handleLogout}
-                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 6, padding: '4px 10px', color: '#f87171', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, width: '100%', textAlign: 'center' }}
+                style={{ background: 'none', border: '1px solid var(--border-color)', borderRadius: 6, padding: '4px 10px', color: 'var(--danger)', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, width: '100%', textAlign: 'center' }}
               >
                 <i className="fas fa-sign-out-alt me-1"></i> Sign Out
               </button>
