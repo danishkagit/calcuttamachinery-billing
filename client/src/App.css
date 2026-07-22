@@ -393,7 +393,7 @@ body {
 
 .sidebar {
   width: var(--sidebar-width);
-  min-height: calc(100vh - var(--navbar-height));
+  height: calc(100vh - var(--navbar-height));
   background: var(--sidebar-bg);
   color: var(--sidebar-text);
   display: flex;
@@ -404,6 +404,7 @@ body {
   z-index: 1020;
   transition: transform 0.3s ease;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
 }
 
 .sidebar-header {
