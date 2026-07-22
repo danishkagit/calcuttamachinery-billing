@@ -20,6 +20,7 @@ const sections = [
       { path: '/products', icon: 'fas fa-box', label: 'Products' },
       { path: '/inventory', icon: 'fas fa-boxes', label: 'Inventory' },
       { path: '/labour', icon: 'fas fa-user-clock', label: 'Labour' },
+      { path: '/attendance', icon: 'fas fa-calendar-check', label: 'Attendance' },
       { path: '/barcodes', icon: 'fas fa-qrcode', label: 'Barcode Generator' },
     ],
   },

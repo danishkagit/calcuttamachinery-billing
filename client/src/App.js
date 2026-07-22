@@ -37,6 +37,8 @@ import BarcodeGenerator from './pages/BarcodeGenerator';
 import TallyExport from './pages/TallyExport';
 import LabourList from './pages/LabourList';
 import LabourForm from './pages/LabourForm';
+import AttendanceList from './pages/AttendanceList';
+import AttendanceForm from './pages/AttendanceForm';
 
 const ProtectedLayout = ({ children }) => (
   <ProtectedRoute>
@@ -84,6 +86,9 @@ function App() {
           <Route path="/labour" element={<ProtectedLayout><LabourList /></ProtectedLayout>} />
           <Route path="/labour/add" element={<ProtectedLayout><LabourForm /></ProtectedLayout>} />
           <Route path="/labour/edit/:id" element={<ProtectedLayout><LabourForm /></ProtectedLayout>} />
+          <Route path="/attendance" element={<ProtectedLayout><AttendanceList /></ProtectedLayout>} />
+          <Route path="/attendance/add" element={<ProtectedLayout><AttendanceForm /></ProtectedLayout>} />
+          <Route path="/attendance/edit/:id" element={<ProtectedLayout><AttendanceForm /></ProtectedLayout>} />
           <Route path="/barcodes" element={<ProtectedLayout><BarcodeGenerator /></ProtectedLayout>} />
           <Route path="/tally-export" element={<ProtectedLayout><TallyExport /></ProtectedLayout>} />
         </Routes>
