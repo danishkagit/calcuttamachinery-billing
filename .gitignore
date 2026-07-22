@@ -7,4 +7,8 @@ build/
 dist/
 *.log
 *.err
+models*.txt
+skills-lock.json
 docker-compose.override.yml
+.agents/
+.opencode/
