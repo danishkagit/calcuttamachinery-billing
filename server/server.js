@@ -4,7 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
+require('dotenv').config({ path: __dirname + '/.env' });
 
 const authRoutes = require('./routes/auth');
 const companyRoutes = require('./routes/company');
