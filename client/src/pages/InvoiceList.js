@@ -5,6 +5,17 @@ import { formatCurrency, formatDate } from '../utils/helpers';
 import Loading from '../components/Loading';
 import Papa from 'papaparse';
 
+const TYPE_COLORS = {
+  'Credit Note': '#0891b2',
+  'Debit Note': '#7c3aed',
+  'Tax Invoice': '#2563eb',
+  'Bill of Supply': '#059669',
+  'Proforma Invoice': '#d97706',
+  'Quotation': '#dc2626',
+  'Delivery Challan': '#0f766e',
+  'Purchase Order': '#9333ea',
+};
+
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,6 +23,7 @@ const InvoiceList = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -24,6 +36,7 @@ const InvoiceList = () => {
     setLoading(true);
     try {
       const params = { page, limit, search, startDate: fromDate, endDate: toDate, paymentStatus: statusFilter };
+      if (typeFilter) params.invoiceType = typeFilter;
       const res = await api.get('/invoices', { params });
       const d = res.data;
       setInvoices(d.data || []);
@@ -35,7 +48,7 @@ const InvoiceList = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, search, fromDate, toDate, statusFilter]);
+  }, [page, search, fromDate, toDate, statusFilter, typeFilter]);
 
   useEffect(() => { fetchInvoices(); }, [fetchInvoices]);
 
@@ -44,7 +57,6 @@ const InvoiceList = () => {
     setDeleting(true);
     try {
       await api.delete(`/invoices/${deleteId}`);
-      window.alert('Invoice deleted');
       setDeleteId(null);
       fetchInvoices();
     } catch (err) {
@@ -56,52 +68,54 @@ const InvoiceList = () => {
 
   const handleExport = async () => {
     try {
-      const res = await api.get('/invoices', { params: { limit: 10000, paymentStatus: statusFilter, startDate: fromDate, endDate: toDate, search } });
+      const params = { limit: 10000, paymentStatus: statusFilter, startDate: fromDate, endDate: toDate, search };
+      if (typeFilter) params.invoiceType = typeFilter;
+      const res = await api.get('/invoices', { params });
       const exportData = [];
       const invs = res.data.data || [];
       if (invs.length === 0) return window.alert("No invoices to export");
-      
+
       invs.forEach(inv => {
         if (!inv.items || inv.items.length === 0) {
-           exportData.push({
-             invoiceNo: inv.invoiceNo,
-             invoiceDate: inv.invoiceDate ? inv.invoiceDate.substring(0,10) : '',
-             partyName: inv.party?.name || '',
-             partyGstin: inv.party?.gstin || '',
-             placeOfSupply: inv.placeOfSupply || '',
-             invoiceType: inv.invoiceType || '',
-             paymentStatus: inv.paymentStatus || '',
-             paidAmount: inv.paidAmount || 0,
-             paymentMethod: inv.paymentMethod || '',
-             productName: '',
-             description: '',
-             quantity: '',
-             unit: '',
-             rate: '',
-             taxRate: '',
-             cess: ''
-           });
+          exportData.push({
+            invoiceNo: inv.invoiceNo,
+            invoiceDate: inv.invoiceDate ? inv.invoiceDate.substring(0,10) : '',
+            partyName: inv.party?.name || '',
+            partyGstin: inv.party?.gstin || '',
+            placeOfSupply: inv.placeOfSupply || '',
+            invoiceType: inv.invoiceType || '',
+            paymentStatus: inv.paymentStatus || '',
+            paidAmount: inv.paidAmount || 0,
+            paymentMethod: inv.paymentMethod || '',
+            productName: '',
+            description: '',
+            quantity: '',
+            unit: '',
+            rate: '',
+            taxRate: '',
+            cess: ''
+          });
         } else {
-           inv.items.forEach(item => {
-             exportData.push({
-               invoiceNo: inv.invoiceNo,
-               invoiceDate: inv.invoiceDate ? inv.invoiceDate.substring(0,10) : '',
-               partyName: inv.party?.name || '',
-               partyGstin: inv.party?.gstin || '',
-               placeOfSupply: inv.placeOfSupply || '',
-               invoiceType: inv.invoiceType || '',
-               paymentStatus: inv.paymentStatus || '',
-               paidAmount: inv.paidAmount || 0,
-               paymentMethod: inv.paymentMethod || '',
-               productName: item.product?.name || item.description || '',
-               description: item.description || '',
-               quantity: item.quantity,
-               unit: item.unit,
-               rate: item.rate,
-               taxRate: item.taxRate,
-               cess: item.cess
-             });
-           });
+          inv.items.forEach(item => {
+            exportData.push({
+              invoiceNo: inv.invoiceNo,
+              invoiceDate: inv.invoiceDate ? inv.invoiceDate.substring(0,10) : '',
+              partyName: inv.party?.name || '',
+              partyGstin: inv.party?.gstin || '',
+              placeOfSupply: inv.placeOfSupply || '',
+              invoiceType: inv.invoiceType || '',
+              paymentStatus: inv.paymentStatus || '',
+              paidAmount: inv.paidAmount || 0,
+              paymentMethod: inv.paymentMethod || '',
+              productName: item.product?.name || item.description || '',
+              description: item.description || '',
+              quantity: item.quantity,
+              unit: item.unit,
+              rate: item.rate,
+              taxRate: item.taxRate,
+              cess: item.cess
+            });
+          });
         }
       });
 
@@ -110,7 +124,7 @@ const InvoiceList = () => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'sales_invoices.csv';
+      a.download = 'invoices_export.csv';
       a.click();
     } catch (err) {
       window.alert('Failed to export invoices');
@@ -175,13 +189,24 @@ const InvoiceList = () => {
   return (
     <div className="invoice-list-page page-enter">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h4 className="fw-bold mb-0">Invoices</h4>
+        <h4 className="fw-bold mb-0">
+          {typeFilter || 'All'} {typeFilter ? 'List' : 'Invoices'}
+        </h4>
         <div className="d-flex gap-2">
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept=".csv" onChange={handleFileUpload} />
           <button className="btn btn-outline-success" onClick={handleExport}><i className="fas fa-file-export me-1"></i>Export</button>
           <button className="btn btn-outline-primary" onClick={handleImportClick}><i className="fas fa-file-import me-1"></i>Import</button>
           <Link to="/invoices/create" className="btn btn-primary"><i className="fas fa-plus me-1"></i>Create Invoice</Link>
         </div>
+      </div>
+
+      <div className="d-flex gap-2 mb-3 flex-wrap">
+        <button className={`btn btn-sm ${!typeFilter ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => { setTypeFilter(''); setPage(1); }}>All</button>
+        <button className={`btn btn-sm ${typeFilter === 'Tax Invoice' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => { setTypeFilter('Tax Invoice'); setPage(1); }}>Tax Invoice</button>
+        <button className={`btn btn-sm ${typeFilter === 'Credit Note' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => { setTypeFilter('Credit Note'); setPage(1); }}>Credit Note</button>
+        <button className={`btn btn-sm ${typeFilter === 'Debit Note' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => { setTypeFilter('Debit Note'); setPage(1); }}>Debit Note</button>
+        <button className={`btn btn-sm ${typeFilter === 'Quotation' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => { setTypeFilter('Quotation'); setPage(1); }}>Quotation</button>
+        <button className={`btn btn-sm ${typeFilter === 'Purchase Order' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => { setTypeFilter('Purchase Order'); setPage(1); }}>Purchase Order</button>
       </div>
 
       <div className="card border-0 shadow-sm mb-4">
@@ -218,20 +243,34 @@ const InvoiceList = () => {
               <table className="table table-hover mb-0">
                 <thead className="table-light">
                   <tr>
-                    <th>Invoice #</th>
+                    <th>Document #</th>
+                    <th>Type</th>
                     <th>Date</th>
                     <th>Party Name</th>
-                    <th className="text-end">Grand Total</th>
+                    <th className="text-end">Amount</th>
                     <th className="text-center">Status</th>
                     <th className="text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoices.length === 0 ? (
-                    <tr><td colSpan="6" className="text-center py-4 text-muted">No invoices found</td></tr>
+                    <tr><td colSpan="7" className="text-center py-4 text-muted">No invoices found</td></tr>
                   ) : invoices.map((inv) => (
                     <tr key={inv._id}>
                       <td className="fw-semibold">{inv.invoiceNo}</td>
+                      <td>
+                        <span style={{
+                          color: TYPE_COLORS[inv.invoiceType] || '#64748b',
+                          fontSize: '0.72rem',
+                          fontWeight: 600,
+                          background: (TYPE_COLORS[inv.invoiceType] || '#64748b') + '18',
+                          padding: '2px 8px',
+                          borderRadius: 4,
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {inv.invoiceType || 'Tax Invoice'}
+                        </span>
+                      </td>
                       <td className="small">{formatDate(inv.invoiceDate)}</td>
                       <td>{inv.party?.name || ''}</td>
                       <td className="text-end fw-semibold">{formatCurrency(inv.grandTotal)}</td>
@@ -292,7 +331,7 @@ const InvoiceList = () => {
               <button type="button" className="btn-close" data-bs-dismiss="modal" onClick={() => setDeleteId(null)}></button>
             </div>
             <div className="modal-body">
-              <p className="mb-0">Are you sure you want to delete this invoice? This action cannot be undone.</p>
+              <p className="mb-0">Are you sure you want to delete this document? This action cannot be undone.</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setDeleteId(null)}>Cancel</button>

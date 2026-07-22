@@ -15,8 +15,9 @@ const InvoiceCreate = () => {
   const isPurchase = typeParam === 'Purchase';
   const isPurchaseOrder = typeParam === 'Purchase Order';
   const isCreditNote = typeParam === 'Credit Note';
+  const isDebitNote = typeParam === 'Debit Note';
   const defaultPartyType = (isPurchase || isPurchaseOrder) ? 'Supplier' : 'Customer';
-  const defaultInvoiceType = isCreditNote ? 'Credit Note' : isPurchaseOrder ? 'Purchase Order' : isPurchase ? 'Tax Invoice' : 'Tax Invoice';
+  const defaultInvoiceType = isCreditNote ? 'Credit Note' : isDebitNote ? 'Debit Note' : isPurchaseOrder ? 'Purchase Order' : isPurchase ? 'Tax Invoice' : 'Tax Invoice';
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -277,7 +278,7 @@ const InvoiceCreate = () => {
 
   const isInterState = selectedParty?.stateCode && companyStateCode && selectedParty.stateCode !== companyStateCode;
 
-  const pageTitle = isCreditNote ? 'Create Credit Note' : isPurchaseOrder ? 'Create Purchase Order' : isPurchase ? 'Create Purchase Entry' : 'Create New Invoice';
+  const pageTitle = isCreditNote ? 'Create Credit Note' : isDebitNote ? 'Create Debit Note' : isPurchaseOrder ? 'Create Purchase Order' : isPurchase ? 'Create Purchase Entry' : 'Create New Invoice';
 
   return (
     <div className="invoice-create-page page-enter">
@@ -553,12 +554,12 @@ const InvoiceCreate = () => {
 
           <div className="card border-0 shadow-sm mb-4">
             <div className="card-header bg-white py-3">
-              <h6 className="fw-bold mb-0"><i className="fas fa-sticky-note me-2"></i>Notes</h6>
+              <h6 className="fw-bold mb-0"><i className="fas fa-sticky-note me-2"></i>{isCreditNote || isDebitNote ? 'Reason' : 'Notes'}</h6>
             </div>
             <div className="card-body">
               <div className="mb-3">
-                <label className="form-label fw-semibold small">Notes</label>
-                <textarea className="form-control" rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })}></textarea>
+                <label className="form-label fw-semibold small">{isCreditNote || isDebitNote ? `Reason for ${isCreditNote ? 'Credit Note' : 'Debit Note'} (Original Invoice Ref, Amount, etc.)` : 'Notes'}</label>
+                <textarea className="form-control" rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder={isCreditNote ? 'e.g. Against Invoice INV-0001 - Rate Difference Adjustment' : isDebitNote ? 'e.g. Against Invoice INV-0002 - Additional Charges' : ''}></textarea>
               </div>
               <div className="mb-3">
                 <label className="form-label fw-semibold small">Terms & Conditions</label>

@@ -16,6 +16,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/', icon: 'fas fa-th-large', label: 'Dashboard' },
     { path: '/invoices/create', icon: 'fas fa-plus-circle', label: 'New Invoice' },
     { path: '/invoices', icon: 'fas fa-file-invoice', label: 'Invoices' },
+    { path: '/invoices/create?type=Credit+Note', icon: 'fas fa-undo-alt', label: 'Credit Note' },
+    { path: '/invoices/create?type=Debit+Note', icon: 'fas fa-exchange-alt', label: 'Debit Note' },
     { path: '/parties', icon: 'fas fa-users', label: 'Parties' },
     { path: '/products', icon: 'fas fa-box', label: 'Products' },
     { path: '/reports/sales', icon: 'fas fa-chart-bar', label: 'Sales Report' },

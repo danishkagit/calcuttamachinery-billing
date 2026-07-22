@@ -85,6 +85,14 @@ const companySchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  lastCreditNoteNo: {
+    type: Number,
+    default: 0
+  },
+  lastDebitNoteNo: {
+    type: Number,
+    default: 0
+  },
   stateCode: {
     type: Number
   },

@@ -88,11 +88,23 @@ const calculateTax = (items, companyStateCode, partyStateCode) => {
   };
 };
 
-const generateInvoiceNo = async (company) => {
-  const prefix = company.invoicePrefix || 'INV-';
-  const nextNo = (company.lastInvoiceNo || 0) + 1;
+const generateInvoiceNo = async (company, invoiceType) => {
+  let prefix, nextNo, counterField;
+  if (invoiceType === 'Credit Note') {
+    prefix = 'CN-';
+    nextNo = (company.lastCreditNoteNo || 0) + 1;
+    counterField = 'lastCreditNoteNo';
+  } else if (invoiceType === 'Debit Note') {
+    prefix = 'DN-';
+    nextNo = (company.lastDebitNoteNo || 0) + 1;
+    counterField = 'lastDebitNoteNo';
+  } else {
+    prefix = company.invoicePrefix || 'INV-';
+    nextNo = (company.lastInvoiceNo || 0) + 1;
+    counterField = 'lastInvoiceNo';
+  }
   const padded = String(nextNo).padStart(4, '0');
-  return `${prefix}${padded}`;
+  return { invoiceNo: `${prefix}${padded}`, counterField, nextNo };
 };
 
 router.post('/', [
@@ -111,7 +123,8 @@ router.post('/', [
       return res.status(404).json({ success: false, error: 'Party not found' });
     }
 
-    const invoiceNo = await generateInvoiceNo(company);
+    const invoiceType = req.body.invoiceType || 'Tax Invoice';
+    const { invoiceNo, counterField, nextNo } = await generateInvoiceNo(company, invoiceType);
 
     const taxResult = calculateTax(req.body.items, company.stateCode, party.stateCode);
 
@@ -121,6 +134,7 @@ router.post('/', [
     const invoiceData = {
       ...req.body,
       invoiceNo,
+      invoiceType,
       ...taxResult,
       amountInWords: inWords,
       invoiceDate: req.body.invoiceDate || new Date(),
@@ -129,7 +143,7 @@ router.post('/', [
 
     const invoice = await Invoice.create(invoiceData);
 
-    company.lastInvoiceNo = (company.lastInvoiceNo || 0) + 1;
+    company[counterField] = nextNo;
     await company.save();
 
     const populated = await Invoice.findById(invoice._id)
@@ -192,8 +206,10 @@ router.post('/import', protect, async (req, res) => {
 
         let invoiceNo = invData.invoiceNo;
         if (!invoiceNo) {
-          invoiceNo = await generateInvoiceNo(company);
-          company.lastInvoiceNo = (company.lastInvoiceNo || 0) + 1;
+          const invType = invData.invoiceType || 'Tax Invoice';
+          const result = await generateInvoiceNo(company, invType);
+          invoiceNo = result.invoiceNo;
+          company[result.counterField] = result.nextNo;
         }
 
         const taxResult = calculateTax(items, company.stateCode, party.stateCode);
@@ -275,6 +291,10 @@ router.get('/', protect, async (req, res) => {
 
     if (req.query.paymentStatus) {
       filter.paymentStatus = req.query.paymentStatus;
+    }
+
+    if (req.query.invoiceType) {
+      filter.invoiceType = req.query.invoiceType;
     }
 
     let query = Invoice.find(filter)
