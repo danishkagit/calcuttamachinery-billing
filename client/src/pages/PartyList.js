@@ -129,12 +129,12 @@ const PartyList = () => {
                 <thead className="table-light">
                   <tr>
                     <th>Name</th>
-                    <th>Company</th>
+                    <th>Group</th>
                     <th>Mobile</th>
                     <th>GSTIN</th>
                     <th>State</th>
                     <th className="text-center">Type</th>
-                    <th className="text-end">Opening Balance</th>
+                    <th className="text-end">Credit Limit</th>
                     <th className="text-center">Actions</th>
                   </tr>
                 </thead>
@@ -144,12 +144,12 @@ const PartyList = () => {
                   ) : parties.map((party) => (
                     <tr key={party._id}>
                       <td className="fw-semibold">{party.name}</td>
-                      <td className="small">{party.companyName || '-'}</td>
+                      <td className="small"><span className="badge bg-light text-dark">{party.group || 'General'}</span></td>
                       <td>{party.mobile}</td>
                       <td className="small">{party.gstin || '-'}</td>
                       <td>{party.state || '-'}</td>
                       <td className="text-center"><span className={`badge ${party.partyType === 'Customer' ? 'bg-primary' : 'bg-info'}`}>{party.partyType}</span></td>
-                      <td className="text-end">{formatCurrency(party.openingBalance || 0)}</td>
+                      <td className="text-end">{party.creditLimit > 0 ? formatCurrency(party.creditLimit) : '-'}</td>
                       <td className="text-center">
                         <Link to={`/parties/edit/${party._id}`} className="btn btn-sm btn-outline-primary me-1"><i className="fas fa-edit"></i></Link>
                         <button className="btn btn-sm btn-outline-danger" onClick={() => setDeleteId(party._id)} data-bs-toggle="modal" data-bs-target="#deleteModal"><i className="fas fa-trash"></i></button>

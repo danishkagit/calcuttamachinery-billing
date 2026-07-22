@@ -17,6 +17,7 @@ const InvoiceView = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentForm, setPaymentForm] = useState({ amount: 0, paymentDate: new Date().toISOString().split('T')[0], paymentMethod: 'Cash', reference: '', notes: '' });
   const [recording, setRecording] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -42,6 +43,36 @@ const InvoiceView = () => {
       navigate('/invoices');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDuplicate = async () => {
+    setDuplicating(true);
+    try {
+      const payload = {
+        invoiceType: invoice.invoiceType,
+        party: invoice.party?._id,
+        company: invoice.company?._id,
+        items: (invoice.items || []).map(item => ({
+          product: item.product?._id || item.product,
+          description: item.description,
+          quantity: item.quantity,
+          unit: item.unit,
+          rate: item.rate,
+          taxRate: item.taxRate,
+          cess: item.cess || 0
+        })),
+        notes: `Duplicate of ${invoice.invoiceNo}`,
+        invoiceDate: new Date().toISOString().split('T')[0],
+        termsAndConditions: invoice.termsAndConditions,
+        placeOfSupply: invoice.placeOfSupply
+      };
+      const res = await api.post('/invoices', payload);
+      navigate(`/invoices/${res.data.data._id}`);
+    } catch (err) {
+      window.alert('Failed to duplicate: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setDuplicating(false);
     }
   };
 
@@ -98,6 +129,9 @@ const InvoiceView = () => {
           <button className="btn btn-success" onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent('Invoice ' + invoice.invoiceNo + ' from ' + (company?.businessName || ''))}`, '_blank')}><i className="fab fa-whatsapp me-1"></i>WhatsApp</button>
           <button className="btn btn-info text-white" onClick={() => window.open(`mailto:?subject=Invoice ${invoice.invoiceNo}&body=${encodeURIComponent('Please find attached invoice ' + invoice.invoiceNo + ' from ' + (company?.businessName || ''))}`)}><i className="fas fa-envelope me-1"></i>Email</button>
           <Link to={`/invoices/edit/${invoice._id}`} className="btn btn-outline-primary"><i className="fas fa-edit me-1"></i>Edit</Link>
+          <button className="btn btn-outline-info" onClick={handleDuplicate} disabled={duplicating}>
+            <i className="fas fa-copy me-1"></i>{duplicating ? 'Duplicating...' : 'Duplicate'}
+          </button>
           {invoice.paymentStatus !== 'Paid' && (
             <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal"><i className="fas fa-money-bill me-1"></i>Pay</button>
           )}

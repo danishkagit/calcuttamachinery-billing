@@ -15,7 +15,7 @@ const PartyForm = () => {
     partyType: 'Customer', name: '', companyName: '', gstin: '', mobile: '',
     email: '', address: '', city: '', state: '', pincode: '',
     billingAddress: '', shippingAddress: '', openingBalance: 0,
-    creditLimit: 0, stateCode: 0
+    creditLimit: 0, stateCode: 0, group: 'General'
   });
 
   useEffect(() => {
@@ -43,7 +43,8 @@ const PartyForm = () => {
         shippingAddress: p.shippingAddress || '',
         openingBalance: p.openingBalance || 0,
         creditLimit: p.creditLimit || 0,
-        stateCode: p.stateCode || 0
+        stateCode: p.stateCode || 0,
+        group: p.group || 'General'
       });
     } catch (err) {
       window.alert('Failed to load party');
@@ -163,6 +164,12 @@ const PartyForm = () => {
               <div className="col-md-4">
                 <label className="form-label fw-semibold small">Email</label>
                 <input type="email" className="form-control" name="email" value={form.email} onChange={handleChange} />
+              </div>
+              <div className="col-md-4">
+                <label className="form-label fw-semibold small">Group</label>
+                <select className="form-select" name="group" value={form.group} onChange={handleChange}>
+                  {['General', 'Wholesale', 'Retail', 'Distributor', 'Premium', 'Dealer'].map(g => <option key={g} value={g}>{g}</option>)}
+                </select>
               </div>
               <div className="col-md-4">
                 <label className="form-label fw-semibold small">Credit Limit</label>

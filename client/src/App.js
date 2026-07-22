@@ -24,6 +24,10 @@ import OutstandingReport from './pages/OutstandingReport';
 import PaymentList from './pages/PaymentList';
 import GSTReturns from './pages/GSTReturns';
 import TemplateSettings from './pages/TemplateSettings';
+import ExpenseList from './pages/ExpenseList';
+import ExpenseForm from './pages/ExpenseForm';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
 
 const ProtectedLayout = ({ children }) => (
   <ProtectedRoute>
@@ -58,6 +62,11 @@ function App() {
           <Route path="/payments" element={<ProtectedLayout><PaymentList /></ProtectedLayout>} />
           <Route path="/gst-returns" element={<ProtectedLayout><GSTReturns /></ProtectedLayout>} />
           <Route path="/settings/templates" element={<ProtectedLayout><TemplateSettings /></ProtectedLayout>} />
+          <Route path="/settings" element={<ProtectedLayout><Settings /></ProtectedLayout>} />
+          <Route path="/expenses" element={<ProtectedLayout><ExpenseList /></ProtectedLayout>} />
+          <Route path="/expenses/add" element={<ProtectedLayout><ExpenseForm /></ProtectedLayout>} />
+          <Route path="/expenses/edit/:id" element={<ProtectedLayout><ExpenseForm /></ProtectedLayout>} />
+          <Route path="/analytics" element={<ProtectedLayout><Analytics /></ProtectedLayout>} />
         </Routes>
         </CompanyProvider>
       </AuthProvider>

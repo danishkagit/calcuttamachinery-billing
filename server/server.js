@@ -14,6 +14,7 @@ const invoiceRoutes = require('./routes/invoice');
 const reportRoutes = require('./routes/reports');
 const gstinRoutes = require('./routes/gstin');
 const gstReturnsRoutes = require('./routes/gstReturns');
+const expenseRoutes = require('./routes/expenses');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/gstin', gstinRoutes);
 app.use('/api/gst', gstReturnsRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 // Serve frontend build in production (if present — separate deployment may not have it)
 if (process.env.NODE_ENV === 'production') {

@@ -2,6 +2,57 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+const sections = [
+  {
+    label: 'Quick Entry',
+    items: [
+      { path: '/', icon: 'fas fa-th-large', label: 'Dashboard' },
+      { path: '/invoices/create', icon: 'fas fa-plus-circle', label: 'New Invoice' },
+      { path: '/invoices/create?type=Credit+Note', icon: 'fas fa-undo-alt', label: 'Credit Note' },
+      { path: '/invoices/create?type=Debit+Note', icon: 'fas fa-exchange-alt', label: 'Debit Note' },
+      { path: '/expenses/add', icon: 'fas fa-money-bill-wave', label: 'Add Expense' },
+    ],
+  },
+  {
+    label: 'Masters',
+    items: [
+      { path: '/parties', icon: 'fas fa-users', label: 'Parties' },
+      { path: '/products', icon: 'fas fa-box', label: 'Products' },
+    ],
+  },
+  {
+    label: 'Documents',
+    items: [
+      { path: '/invoices', icon: 'fas fa-file-invoice', label: 'All Invoices' },
+      { path: '/payments', icon: 'fas fa-credit-card', label: 'Payments' },
+      { path: '/expenses', icon: 'fas fa-money-bill-wave', label: 'Expenses' },
+    ],
+  },
+  {
+    label: 'Reports',
+    items: [
+      { path: '/reports/sales', icon: 'fas fa-chart-bar', label: 'Sales Report' },
+      { path: '/reports/purchases', icon: 'fas fa-shopping-cart', label: 'Purchase Report' },
+      { path: '/analytics', icon: 'fas fa-chart-pie', label: 'Analytics' },
+      { path: '/reports/outstanding', icon: 'fas fa-clock', label: 'Outstanding' },
+    ],
+  },
+  {
+    label: 'GST & Compliance',
+    items: [
+      { path: '/reports/gstr1', icon: 'fas fa-file-alt', label: 'GSTR-1' },
+      { path: '/reports/gstr3b', icon: 'fas fa-file-alt', label: 'GSTR-3B' },
+      { path: '/gst-returns', icon: 'fas fa-file-upload', label: 'File Returns' },
+    ],
+  },
+  {
+    label: 'Settings',
+    items: [
+      { path: '/settings', icon: 'fas fa-cog', label: 'All Settings' },
+    ],
+  },
+];
+
 const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -11,25 +62,6 @@ const Sidebar = ({ isOpen, onClose }) => {
     navigate('/login');
     onClose();
   };
-
-  const menuItems = [
-    { path: '/', icon: 'fas fa-th-large', label: 'Dashboard' },
-    { path: '/invoices/create', icon: 'fas fa-plus-circle', label: 'New Invoice' },
-    { path: '/invoices', icon: 'fas fa-file-invoice', label: 'Invoices' },
-    { path: '/invoices/create?type=Credit+Note', icon: 'fas fa-undo-alt', label: 'Credit Note' },
-    { path: '/invoices/create?type=Debit+Note', icon: 'fas fa-exchange-alt', label: 'Debit Note' },
-    { path: '/parties', icon: 'fas fa-users', label: 'Parties' },
-    { path: '/products', icon: 'fas fa-box', label: 'Products' },
-    { path: '/reports/sales', icon: 'fas fa-chart-bar', label: 'Sales Report' },
-    { path: '/reports/purchases', icon: 'fas fa-shopping-cart', label: 'Purchase Report' },
-    { path: '/reports/gstr1', icon: 'fas fa-file-alt', label: 'GSTR-1' },
-    { path: '/reports/gstr3b', icon: 'fas fa-file-alt', label: 'GSTR-3B' },
-    { path: '/reports/outstanding', icon: 'fas fa-clock', label: 'Outstanding' },
-    { path: '/gst-returns', icon: 'fas fa-file-upload', label: 'GST Returns' },
-    { path: '/payments', icon: 'fas fa-credit-card', label: 'Payments' },
-    { path: '/company', icon: 'fas fa-building', label: 'Company' },
-    { path: '/settings/templates', icon: 'fas fa-file-signature', label: 'Templates' },
-  ];
 
   return (
     <>
@@ -48,18 +80,41 @@ const Sidebar = ({ isOpen, onClose }) => {
           </button>
         </div>
         <ul className="sidebar-nav">
-          {menuItems.map((item, index) => (
-            <li key={index} className="sidebar-item">
-              <NavLink to={item.path} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} onClick={onClose}>
-                <i className={`${item.icon} sidebar-icon`}></i>
-                <span className="sidebar-text">{item.label}</span>
-              </NavLink>
+          {sections.map((section, si) => (
+            <li key={si}>
+              <div className="sidebar-section-label">{section.label}</div>
+              {section.items.map((item, ii) => (
+                <NavLink
+                  key={ii}
+                  to={item.path}
+                  className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                  onClick={onClose}
+                >
+                  <i className={`${item.icon} sidebar-icon`}></i>
+                  <span className="sidebar-text">{item.label}</span>
+                </NavLink>
+              ))}
             </li>
           ))}
         </ul>
         <div className="sidebar-footer">
-          <div className="gstin-badge">v2.0.0</div>
-          <div>Calcutta Machinery Billing</div>
+          {user && (
+            <div className="mb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 8, marginBottom: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <div style={{ width: 24, height: 24, borderRadius: 6, background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: '0.65rem' }}>
+                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+                <span style={{ color: '#fff', fontWeight: 600, fontSize: '0.78rem' }}>{user.name}</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 6, padding: '4px 10px', color: '#f87171', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, width: '100%', textAlign: 'center' }}
+              >
+                <i className="fas fa-sign-out-alt me-1"></i> Sign Out
+              </button>
+            </div>
+          )}
+          <div className="gstin-badge">GST Billing v2.0</div>
         </div>
       </aside>
     </>

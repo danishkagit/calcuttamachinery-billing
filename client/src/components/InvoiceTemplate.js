@@ -271,6 +271,16 @@ const InvoiceTemplate = forwardRef(({ invoice, company, party, template = 'class
                   <p style={{ marginBottom: 0, fontSize: '0.85rem' }}>IFSC: {company.ifscCode}</p>
                 </div>
               )}
+              {company?.upiId && company?.upiQrEnabled && (
+                <div style={{ background: '#f0fdf4', padding: '14px', borderRadius: '8px', border: '1px solid #bbf7d0', marginTop: '10px' }}>
+                  <h6 style={{ fontWeight: 700, marginBottom: '6px', color: '#16a34a' }}>Pay via UPI</h6>
+                  <p style={{ marginBottom: 0, fontSize: '0.85rem' }}>UPI ID: <strong>{company.upiId}</strong></p>
+                  <div style={{ marginTop: 8 }}>
+                    <img src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=upi://pay?pa=${company.upiId}&pn=${encodeURIComponent(company.businessName || '')}`} 
+                         alt="UPI QR" style={{ width: 100, height: 100 }} />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="col-6">
               {showSection('terms') && invoice.termsAndConditions && (
@@ -897,6 +907,16 @@ const InvoiceTemplate = forwardRef(({ invoice, company, party, template = 'class
                     <p style={{ marginBottom: 0 }}>IFSC: {company.ifscCode}</p>
                   </div>
                 )}
+                {company?.upiId && company?.upiQrEnabled && (
+                  <div style={{ background: '#f0fdf4', padding: '10px', borderRadius: '6px', border: '1px solid #bbf7d0', marginBottom: '8px' }}>
+                    <p style={{ marginBottom: '2px', fontWeight: 600, color: '#16a34a', fontSize: '0.82rem' }}>Pay via UPI</p>
+                    <p style={{ marginBottom: 0, fontSize: '0.82rem' }}>UPI ID: <strong>{company.upiId}</strong></p>
+                    <div style={{ marginTop: 6 }}>
+                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=${company.upiId}&pn=${encodeURIComponent(company.businessName || '')}`} 
+                           alt="UPI QR" style={{ width: 80, height: 80 }} />
+                    </div>
+                  </div>
+                )}
                 {showSection('transport') && invoice.transportMode && (
                   <div style={{ fontSize: '0.8rem' }}>
                     <p style={{ marginBottom: '2px' }}>Transport: {invoice.transportMode} | Vehicle: {invoice.vehicleNo || ''}</p>
@@ -1282,6 +1302,16 @@ const InvoiceTemplate = forwardRef(({ invoice, company, party, template = 'class
                     <p style={{ margin: 0 }}>Bank Name : <strong>{company.bankName}</strong></p>
                     <p style={{ margin: 0 }}>A/c No. : <strong>{company.accountNo}</strong></p>
                     <p style={{ margin: 0 }}>Branch & IFS Code : <strong>{company.ifscCode}</strong></p>
+                  </div>
+                )}
+                {company?.upiId && company?.upiQrEnabled && (
+                  <div style={{ marginBottom: '10px' }}>
+                    <p style={{ margin: 0, textDecoration: 'underline' }}>Pay via UPI</p>
+                    <p style={{ margin: 0 }}>UPI ID : <strong>{company.upiId}</strong></p>
+                    <div style={{ marginTop: 4 }}>
+                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=${company.upiId}&pn=${encodeURIComponent(company.businessName || '')}`} 
+                           alt="UPI QR" style={{ width: 80, height: 80 }} />
+                    </div>
                   </div>
                 )}
                 {showSection('terms') && <><p style={{ margin: 0, textDecoration: 'underline' }}>Declaration</p>

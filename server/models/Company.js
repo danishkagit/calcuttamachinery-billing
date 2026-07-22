@@ -63,6 +63,14 @@ const companySchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  upiId: {
+    type: String,
+    trim: true
+  },
+  upiQrEnabled: {
+    type: Boolean,
+    default: false
+  },
   logo: {
     type: String,
     trim: true

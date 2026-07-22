@@ -8,7 +8,8 @@ const CompanySetup = () => {
   const [form, setForm] = useState({
     businessName: '', gstin: '', pan: '', address: '', city: '', state: '', pincode: '',
     mobile: '', email: '', bankName: '', accountNo: '', ifscCode: '',
-    invoicePrefix: 'INV-', lastInvoiceNo: 1, stateCode: 0, logo: '', signature: ''
+    invoicePrefix: 'INV-', lastInvoiceNo: 1, stateCode: 0, logo: '', signature: '',
+    upiId: '', upiQrEnabled: false
   });
   const [saving, setSaving] = useState(false);
 
@@ -31,7 +32,9 @@ const CompanySetup = () => {
         lastInvoiceNo: company.lastInvoiceNo || 1,
         stateCode: company.stateCode || 0,
         logo: company.logo || '',
-        signature: company.signature || ''
+        signature: company.signature || '',
+        upiId: company.upiId || '',
+        upiQrEnabled: company.upiQrEnabled || false
       });
     }
   }, [company]);
@@ -169,6 +172,20 @@ const CompanySetup = () => {
                 <label className="form-label fw-semibold small">Signature</label>
                 <input type="file" className="form-control" accept="image/*" onChange={handleFileUpload('signature')} />
                 {form.signature && <img src={form.signature} alt="Signature" className="mt-2" style={{ maxHeight: '50px' }} />}
+              </div>
+            </div>
+
+            <h6 className="fw-bold mb-3 text-primary"><i className="fas fa-qrcode me-2"></i>UPI Payment</h6>
+            <div className="row g-3 mb-4">
+              <div className="col-md-4">
+                <label className="form-label fw-semibold small">UPI ID</label>
+                <input type="text" className="form-control" name="upiId" value={form.upiId} onChange={handleChange} placeholder="e.g. business@upi" />
+              </div>
+              <div className="col-md-4 d-flex align-items-end">
+                <div className="form-check">
+                  <input type="checkbox" className="form-check-input" id="upiQrEnabled" checked={form.upiQrEnabled} onChange={(e) => setForm({...form, upiQrEnabled: e.target.checked})} />
+                  <label className="form-check-label small" htmlFor="upiQrEnabled">Show UPI QR on invoices</label>
+                </div>
               </div>
             </div>
 
