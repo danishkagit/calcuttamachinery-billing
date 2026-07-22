@@ -29,7 +29,7 @@ const Navbar = ({ toggleSidebar }) => {
     <nav className="main-navbar fixed-top">
       <div className="navbar-inner">
         <div className="navbar-left">
-          <button className="sidebar-toggler d-lg-none" onClick={toggleSidebar}>
+          <button className="sidebar-toggler" onClick={toggleSidebar}>
             <i className="fas fa-bars"></i>
           </button>
           <Link className="navbar-brand-wrap" to="/">
