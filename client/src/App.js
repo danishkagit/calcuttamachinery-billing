@@ -1,6 +1,5 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
 import { CompanyProvider } from './context/CompanyContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -33,9 +32,7 @@ const ProtectedLayout = ({ children }) => (
 );
 
 function App() {
-  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE';
   return (
-    <GoogleOAuthProvider clientId={clientId}>
       <AuthProvider>
         <CompanyProvider>
         <Routes>
@@ -64,7 +61,6 @@ function App() {
         </Routes>
         </CompanyProvider>
       </AuthProvider>
-    </GoogleOAuthProvider>
   );
 }
 

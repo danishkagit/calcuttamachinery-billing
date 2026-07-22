@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -16,7 +17,10 @@ const gstReturnsRoutes = require('./routes/gstReturns');
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map(s => s.trim())
+  : ['http://localhost:3000'];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -39,13 +43,19 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/gstin', gstinRoutes);
 app.use('/api/gst', gstReturnsRoutes);
 
-// Serve frontend in production
+// Serve frontend build in production (if present — separate deployment may not have it)
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client', 'build', 'index.html'));
-  });
+  const buildPath = path.join(__dirname, '../client/build');
+  if (fs.existsSync(buildPath)) {
+    app.use(express.static(buildPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(buildPath, 'index.html'));
+    });
+  } else {
+    app.use((req, res, next) => {
+      res.status(404).json({ success: false, error: `Route ${req.originalUrl} not found` });
+    });
+  }
 } else {
   app.use((req, res, next) => {
     res.status(404).json({ success: false, error: `Route ${req.originalUrl} not found` });

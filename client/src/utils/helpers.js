@@ -43,7 +43,7 @@ const convertIndian = (num) => {
   if (num < 100) return tens[Math.floor(num / 10)] + ' ' + ones[num % 10] + ' ';
   if (num < 1000) return ones[Math.floor(num / 100)] + ' Hundred ' + convertIndian(num % 100);
   if (num < 100000) return convertIndian(Math.floor(num / 1000)) + 'Thousand ' + convertIndian(num % 1000);
-  if (num < 10000000) return convertIndian(Math.floor(num / 1000)) + 'Thousand ' + convertIndian(num % 1000);
+  if (num < 10000000) return convertIndian(Math.floor(num / 100000)) + 'Lakh ' + convertIndian(num % 100000);
   return convertIndian(Math.floor(num / 10000000)) + 'Crore ' + convertIndian(num % 10000000);
 };
 

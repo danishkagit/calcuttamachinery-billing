@@ -56,9 +56,7 @@ const InvoiceView = () => {
     }
     setRecording(true);
     try {
-      await api.post('/payments', {
-        invoice: invoice._id,
-        party: party._id,
+      await api.post(`/invoices/${invoice._id}/payment`, {
         amount: Number(paymentForm.amount),
         paymentDate: paymentForm.paymentDate,
         paymentMethod: paymentForm.paymentMethod,

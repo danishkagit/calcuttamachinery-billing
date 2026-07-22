@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { GoogleLogin } from '@react-oauth/google';
+
 
 const RegisterPage = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { register, googleLogin, user } = useAuth();
+  const { register, user } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -39,21 +39,6 @@ const RegisterPage = () => {
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.error || 'Registration failed';
-      setError(msg);
-      window.alert(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSuccess = async (credentialResponse) => {
-    setLoading(true);
-    try {
-      await googleLogin(credentialResponse.credential);
-      window.alert('Google authentication successful!');
-      navigate('/');
-    } catch (err) {
-      const msg = err.response?.data?.error || 'Google authentication failed.';
       setError(msg);
       window.alert(msg);
     } finally {
@@ -149,24 +134,6 @@ const RegisterPage = () => {
                 {loading ? <><span className="spinner-border spinner-border-sm me-2"></span>Creating...</> : 'Create Account'}
               </button>
             </form>
-
-            <div className="text-center my-3 text-muted position-relative">
-              <hr style={{ borderColor: 'var(--glass-border)' }} />
-              <span style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--navy)', padding: '0 10px', fontSize: '0.8rem' }}>OR</span>
-            </div>
-
-            <div className="d-flex justify-content-center">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => {
-                  window.alert('Google Sign Up Failed');
-                }}
-                text="signup_with"
-                theme="filled_black"
-                shape="rectangular"
-                width="100%"
-              />
-            </div>
 
             <p className="text-center mt-4 mb-0 small" style={{ color: 'var(--text-muted)' }}>
               Already have an account? <Link to="/login" className="fw-semibold" style={{ color: 'var(--primary)' }}>Sign In</Link>

@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// Frontend and backend are integrated, use relative path for API
-const API_BASE = '/api';
+const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
 const api = axios.create({
   baseURL: API_BASE,

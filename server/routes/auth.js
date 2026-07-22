@@ -3,10 +3,13 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
-const { OAuth2Client } = require('google-auth-library');
-
-// We use a fallback client ID here. In production, this should come from process.env.GOOGLE_CLIENT_ID
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE');
+let googleClient = null;
+try {
+  const { OAuth2Client } = require('google-auth-library');
+  googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE');
+} catch (e) {
+  console.log('Google Auth library not available — Google OAuth disabled');
+}
 
 // Define admin emails
 const ADMIN_EMAILS = ['dnsh00786@gmail.com', 'shakib_champdani@yahoo.co.in'];
@@ -92,6 +95,10 @@ router.post('/google', async (req, res) => {
     
     if (!credential) {
       return res.status(400).json({ success: false, error: 'Google credential missing' });
+    }
+
+    if (!googleClient) {
+      return res.status(503).json({ success: false, error: 'Google Auth is not configured' });
     }
 
     // Verify Google Token

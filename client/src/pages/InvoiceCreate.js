@@ -13,9 +13,10 @@ const InvoiceCreate = () => {
   const { company } = useCompany();
   const typeParam = searchParams.get('type');
   const isPurchase = typeParam === 'Purchase';
+  const isPurchaseOrder = typeParam === 'Purchase Order';
   const isCreditNote = typeParam === 'Credit Note';
-  const defaultPartyType = isPurchase ? 'Supplier' : 'Customer';
-  const defaultInvoiceType = isCreditNote ? 'Credit Note' : isPurchase ? 'Tax Invoice' : 'Tax Invoice';
+  const defaultPartyType = (isPurchase || isPurchaseOrder) ? 'Supplier' : 'Customer';
+  const defaultInvoiceType = isCreditNote ? 'Credit Note' : isPurchaseOrder ? 'Purchase Order' : isPurchase ? 'Tax Invoice' : 'Tax Invoice';
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -276,7 +277,7 @@ const InvoiceCreate = () => {
 
   const isInterState = selectedParty?.stateCode && companyStateCode && selectedParty.stateCode !== companyStateCode;
 
-  const pageTitle = isCreditNote ? 'Create Credit Note' : isPurchase ? 'Create Purchase Entry' : 'Create New Invoice';
+  const pageTitle = isCreditNote ? 'Create Credit Note' : isPurchaseOrder ? 'Create Purchase Order' : isPurchase ? 'Create Purchase Entry' : 'Create New Invoice';
 
   return (
     <div className="invoice-create-page page-enter">
@@ -305,14 +306,14 @@ const InvoiceCreate = () => {
             </div>
             <div className="card-body">
               <div className="mb-3">
-                <label className="form-label fw-semibold small">Search {isPurchase ? 'Supplier' : isCreditNote ? 'Customer' : 'Party'}</label>
+                <label className="form-label fw-semibold small">Search {(isPurchase || isPurchaseOrder) ? 'Supplier' : isCreditNote ? 'Customer' : 'Party'}</label>
                 <div className="input-group">
                   <span className="input-group-text"><i className="fas fa-search"></i></span>
                   <input
                     ref={partySearchRef}
                     type="text"
                     className="form-control"
-                    placeholder={`Search ${isPurchase ? 'supplier' : isCreditNote ? 'customer' : 'party'} by name, mobile or GSTIN...`}
+                    placeholder={`Search ${(isPurchase || isPurchaseOrder) ? 'supplier' : isCreditNote ? 'customer' : 'party'} by name, mobile or GSTIN...`}
                     value={partySearch}
                     onChange={(e) => handlePartySearch(e.target.value)}
                   />
