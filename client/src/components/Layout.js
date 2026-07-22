@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
@@ -22,6 +22,11 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { showHelp, closeHelp } = useKeyboardShortcuts(navigate);
+
+  useEffect(() => {
+    document.body.classList.toggle('sidebar-collapsed', !sidebarOpen);
+    return () => document.body.classList.remove('sidebar-collapsed');
+  }, [sidebarOpen]);
 
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
   const closeSidebar = () => setSidebarOpen(false);
