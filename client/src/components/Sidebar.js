@@ -64,10 +64,14 @@ const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const handleNavClick = () => {
+    if (window.innerWidth < 992) onClose();
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
-    onClose();
+    if (window.innerWidth < 992) onClose();
   };
 
   return (
@@ -95,7 +99,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                   key={ii}
                   to={item.path}
                   className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
-                  onClick={onClose}
+                  onClick={handleNavClick}
                 >
                   <i className={`${item.icon} sidebar-icon`}></i>
                   <span className="sidebar-text">{item.label}</span>
